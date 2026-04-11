@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>珊瑚守护者 v2</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading">
+    <div class="loading-content">
+      <div class="loading-icon">🐠</div>
+      <h2>珊瑚守护者</h2>
+      <p>正在准备海底世界...</p>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Three.js 海洋背景 canvas（底层） -->
+  <canvas id="ocean-canvas"></canvas>
+
+  <!-- 珊瑚层（HTML absolute 定位，叠在 canvas 上） -->
+  <div id="coral-layer"></div>
+
+  <!-- Canvas 2D 修复粒子特效层（最顶层，pointer-events none） -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- 顶部栏 -->
+  <div id="top-bar">
+    <div class="title">🐠 珊瑚守护者</div>
+    <div class="progress-section">
+      <span class="progress-label">修复进度</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-text" id="progress-text">0/5</span>
+    </div>
+  </div>
+
+  <!-- 语音气泡 -->
+  <div id="speech-bubble" class="hidden">
+    <span class="speech-icon">🔊</span>
+    <div class="speech-content">
+      <div class="speech-title" id="speech-title">探测结果</div>
+      <p id="speech-text"></p>
+    </div>
+  </div>
+
+  <!-- 珊瑚信息面板（直接点击珊瑚时弹出） -->
+  <div id="info-panel" class="hidden">
+    <button class="panel-close" id="panel-close">✕</button>
+    <div class="panel-emoji" id="panel-emoji"></div>
+    <div class="panel-name" id="panel-name"></div>
+    <div class="panel-problem" id="panel-problem"></div>
+    <div class="panel-desc" id="panel-desc"></div>
+    <div class="panel-tools" id="panel-tools"></div>
+  </div>
+
+  <!-- 底部工具栏 -->
+  <div id="toolbar">
+    <button class="tool-btn active" data-tool="detect">
+      <span class="tool-icon">🔍</span>
+      <span class="tool-label">探测</span>
+    </button>
+    <button class="tool-btn" data-tool="nutrition">
+      <span class="tool-icon">💧</span>
+      <span class="tool-label">营养液</span>
+    </button>
+    <button class="tool-btn" data-tool="clean">
+      <span class="tool-icon">🧹</span>
+      <span class="tool-label">清理</span>
+    </button>
+    <button class="tool-btn" data-tool="temperature">
+      <span class="tool-icon">🌡️</span>
+      <span class="tool-label">调温</span>
+    </button>
+  </div>
+
+  <!-- 完成庆祝面板 -->
+  <div id="completion-overlay" class="hidden">
+    <div class="completion-content">
+      <button class="completion-close" id="completion-close">✕</button>
+      <div class="completion-emoji">🎉</div>
+      <h1>恭喜你！</h1>
+      <p>所有珊瑚都恢复了健康！</p>
+      <p>你是最棒的珊瑚守护者！</p>
+      <button id="replay-btn">🔄 再玩一次</button>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

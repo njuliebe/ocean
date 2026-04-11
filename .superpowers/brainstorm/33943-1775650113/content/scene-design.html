@@ -1,0 +1,108 @@
+<h2>场景视觉设计</h2>
+<p class="subtitle">海底世界的画面构成</p>
+
+<div class="mockup">
+  <div class="mockup-header">场景分层示意</div>
+  <div class="mockup-body" style="background: linear-gradient(180deg, #041e42 0%, #0a3d6b 25%, #0d5e8a 50%, #0a4a6e 75%, #1a3a4a 100%); min-height: 450px; position: relative; overflow: hidden; border-radius: 8px;">
+
+    <!-- 体积光束 -->
+    <div style="position:absolute;top:0;left:25%;width:120px;height:100%;background:linear-gradient(to bottom, rgba(120,200,255,0.12), transparent 65%);transform:skewX(-8deg);"></div>
+    <div style="position:absolute;top:0;left:50%;width:80px;height:100%;background:linear-gradient(to bottom, rgba(120,200,255,0.08), transparent 55%);transform:skewX(5deg);"></div>
+    <div style="position:absolute;top:0;right:25%;width:100px;height:100%;background:linear-gradient(to bottom, rgba(120,200,255,0.1), transparent 60%);transform:skewX(-3deg);"></div>
+
+    <!-- 焦散光斑 (用径向渐变模拟) -->
+    <div style="position:absolute;bottom:60px;left:15%;width:100px;height:40px;background:radial-gradient(ellipse, rgba(100,200,255,0.1), transparent);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:100px;left:45%;width:80px;height:30px;background:radial-gradient(ellipse, rgba(100,200,255,0.08), transparent);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:80px;right:20%;width:120px;height:35px;background:radial-gradient(ellipse, rgba(100,200,255,0.09), transparent);border-radius:50%;"></div>
+
+    <!-- 海底沙地 -->
+    <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top, #2a5a4a, #1a4a3e, transparent);"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(to top, #3a6a5a, #2a5a4a);border-radius:50% 50% 0 0 / 10px 10px 0 0;"></div>
+
+    <!-- 气泡 -->
+    <div style="position:absolute;top:20%;left:30%;width:6px;height:6px;border:1.5px solid rgba(255,255,255,0.3);border-radius:50%;"></div>
+    <div style="position:absolute;top:35%;left:65%;width:4px;height:4px;border:1px solid rgba(255,255,255,0.25);border-radius:50%;"></div>
+    <div style="position:absolute;top:50%;left:45%;width:8px;height:8px;border:1.5px solid rgba(255,255,255,0.2);border-radius:50%;"></div>
+    <div style="position:absolute;top:15%;right:30%;width:5px;height:5px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;"></div>
+
+    <!-- 浮游生物小点 -->
+    <div style="position:absolute;top:40%;left:20%;width:3px;height:3px;background:rgba(200,230,255,0.4);border-radius:50%;"></div>
+    <div style="position:absolute;top:55%;right:35%;width:2px;height:2px;background:rgba(200,230,255,0.3);border-radius:50%;"></div>
+    <div style="position:absolute;top:30%;left:75%;width:3px;height:3px;background:rgba(200,230,255,0.35);border-radius:50%;"></div>
+
+    <!-- 珊瑚图片占位 (用彩色形状模拟不同种类) -->
+    <!-- 珊瑚1: 脑珊瑚 (灰化 - 营养不良) -->
+    <div style="position:absolute;bottom:30px;left:8%;width:70px;height:55px;background:radial-gradient(ellipse, #999, #777);border-radius:50%;opacity:0.9;box-shadow:0 0 15px rgba(0,0,0,0.3);">
+      <div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#ff9800;font-size:10px;padding:2px 6px;border-radius:8px;white-space:nowrap;">⚠ 营养不良</div>
+    </div>
+
+    <!-- 珊瑚2: 鹿角珊瑚 (健康) -->
+    <div style="position:absolute;bottom:25px;left:22%;width:50px;height:75px;background:linear-gradient(to top, #e74c3c, #ff6b6b);border-radius:30% 30% 5px 5px;opacity:0.9;box-shadow:0 0 15px rgba(231,76,60,0.3);"></div>
+
+    <!-- 珊瑚3: 海扇珊瑚 (有垃圾覆盖) -->
+    <div style="position:absolute;bottom:35px;left:38%;width:80px;height:70px;background:radial-gradient(ellipse at 50% 80%, #9b59b6, #6c3483);border-radius:50% 50% 10% 10%;opacity:0.85;box-shadow:0 0 15px rgba(155,89,182,0.3);">
+      <div style="position:absolute;top:10px;right:-5px;font-size:14px;">🗑️</div>
+      <div style="position:absolute;top:25px;left:5px;font-size:10px;">🥤</div>
+      <div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#ff5252;font-size:10px;padding:2px 6px;border-radius:8px;white-space:nowrap;">⚠ 垃圾覆盖</div>
+    </div>
+
+    <!-- 珊瑚4: 柱状珊瑚 (温度过高 - 泛红) -->
+    <div style="position:absolute;bottom:25px;right:30%;width:35px;height:80px;background:linear-gradient(to top, #ff4444, #ff8888);border-radius:20% 20% 5px 5px;opacity:0.9;box-shadow:0 0 20px rgba(255,68,68,0.4);">
+      <div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#ff5252;font-size:10px;padding:2px 6px;border-radius:8px;white-space:nowrap;">⚠ 温度异常</div>
+    </div>
+
+    <!-- 珊瑚5: 蘑菇珊瑚 (健康) -->
+    <div style="position:absolute;bottom:20px;right:15%;width:55px;height:40px;background:radial-gradient(ellipse at 50% 30%, #f1c40f, #e67e22);border-radius:50% 50% 20% 20%;opacity:0.9;box-shadow:0 0 12px rgba(241,196,15,0.3);"></div>
+
+    <!-- 珊瑚6: 花瓶珊瑚 (疾病 - 白化) -->
+    <div style="position:absolute;bottom:30px;right:3%;width:45px;height:60px;background:linear-gradient(to top, #ddd, #f5f5f5);border-radius:40% 40% 15% 15%;opacity:0.85;box-shadow:0 0 10px rgba(200,200,200,0.3);">
+      <div style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#ff9800;font-size:10px;padding:2px 6px;border-radius:8px;white-space:nowrap;">⚠ 白化</div>
+    </div>
+
+    <!-- 海草 -->
+    <div style="position:absolute;bottom:10px;left:55%;width:8px;height:50px;background:linear-gradient(to top, #2ecc71, #27ae60);border-radius:3px;transform:rotate(-5deg);opacity:0.7;"></div>
+    <div style="position:absolute;bottom:10px;left:57%;width:6px;height:40px;background:linear-gradient(to top, #27ae60, #229954);border-radius:3px;transform:rotate(8deg);opacity:0.6;"></div>
+    <div style="position:absolute;bottom:10px;right:8%;width:7px;height:45px;background:linear-gradient(to top, #2ecc71, #1abc9c);border-radius:3px;transform:rotate(-3deg);opacity:0.65;"></div>
+
+    <!-- 小鱼 -->
+    <div style="position:absolute;top:30%;left:18%;font-size:16px;transform:scaleX(-1);">🐠</div>
+    <div style="position:absolute;top:45%;right:25%;font-size:12px;">🐟</div>
+    <div style="position:absolute;top:25%;left:60%;font-size:10px;transform:scaleX(-1);">🐟</div>
+
+    <!-- 标注 -->
+    <div style="position:absolute;top:8px;left:10px;color:rgba(255,255,255,0.6);font-size:11px;">← Three.js 体积光束</div>
+    <div style="position:absolute;top:28px;left:10px;color:rgba(255,255,255,0.5);font-size:11px;">← Three.js 焦散光斑</div>
+    <div style="position:absolute;top:48px;right:10px;color:rgba(255,255,255,0.5);font-size:11px;text-align:right;">Three.js 气泡粒子 →</div>
+    <div style="position:absolute;bottom:90px;left:10px;color:rgba(255,255,255,0.6);font-size:11px;">← HTML 珊瑚图片层</div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>Three.js 环境层效果清单</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#64b5f6;">🌊 水面着色器</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">深蓝到浅蓝的深度渐变，顶部有微弱的波纹折射效果</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#81c784;">💡 体积光束</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">从水面射入的阳光光柱，缓慢摆动，营造水下光影</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#fff176;">✨ 焦散光斑</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">海底地面上的波纹光斑，随时间缓慢流动变化</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#b39ddb;">🫧 气泡粒子</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">随机上浮的气泡，带横向漂移和透明度变化</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#4fc3f7;">🌿 浮游微粒</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">细小的发光微粒缓慢飘动，增加水体浑浊感和真实度</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+      <strong style="color:#ffab91;">🏖️ 沙地</strong>
+      <p style="font-size:13px;margin:6px 0 0;color:rgba(255,255,255,0.7);">海底沙地平面，接收焦散光斑投影</p>
+    </div>
+  </div>
+</div>
