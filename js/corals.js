@@ -10,20 +10,19 @@
 // 珊瑚静态数据
 // ─────────────────────────────────────────────
 export const CORAL_DATA = [
-  {
-    id: 'brain',
-    name: '脑珊瑚',
-    emoji: '🪸',
-    problem: 'nutrition',
-    problemLabel: '营养不良 / 白化',
-    desc: '长期缺乏营养，珊瑚虫失去了共生藻，颜色变得灰白。',
-    tool: 'nutrition',
-    healthyColor: '粉红色',
-    // 屏幕位置（百分比，左下区域）
-    posX: 18, posY: 72,
-    swayDur: '3.8s',
-    width: 130,
-  },
+  // {
+  //   id: 'brain',
+  //   name: '脑珊瑚',
+  //   emoji: '🪸',
+  //   problem: 'nutrition',
+  //   problemLabel: '营养不良 / 白化',
+  //   desc: '长期缺乏营养，珊瑚虫失去了共生藻，颜色变得灰白。',
+  //   tool: 'nutrition',
+  //   healthyColor: '粉红色',
+  //   posX: 18, posY: 92,
+  //   swayDur: '3.8s',
+  //   width: 195,
+  // },
   {
     id: 'staghorn',
     name: '鹿角珊瑚',
@@ -33,9 +32,9 @@ export const CORAL_DATA = [
     desc: '高温和污染导致鹿角珊瑚完全失去颜色，已完全白化。',
     tool: 'nutrition',
     healthyColor: '鲜红色',
-    posX: 35, posY: 68,
+    posX: 15, posY: 95,
     swayDur: '4.5s',
-    width: 110,
+    width: 165,
   },
   {
     id: 'seafan',
@@ -46,9 +45,9 @@ export const CORAL_DATA = [
     desc: '人类丢弃的塑料袋和饮料瓶缠绕在珊瑚上，阻碍了它的呼吸。',
     tool: 'clean',
     healthyColor: '紫色',
-    posX: 52, posY: 65,
+    posX: 37, posY: 96,
     swayDur: '5.2s',
-    width: 140,
+    width: 210,
   },
   {
     id: 'pillar',
@@ -59,9 +58,9 @@ export const CORAL_DATA = [
     desc: '海水变暖让珊瑚承受热应激，泛出红色，急需降温。',
     tool: 'temperature',
     healthyColor: '青绿色',
-    posX: 70, posY: 70,
+    posX: 57, posY: 94,
     swayDur: '4.0s',
-    width: 115,
+    width: 173,
   },
   {
     id: 'mushroom',
@@ -72,9 +71,9 @@ export const CORAL_DATA = [
     desc: '底部沉积物和垃圾覆盖了蘑菇珊瑚，让它无法进行光合作用。',
     tool: 'clean',
     healthyColor: '金黄色',
-    posX: 84, posY: 67,
+    posX: 77, posY: 95,
     swayDur: '3.5s',
-    width: 120,
+    width: 180,
   },
 ];
 

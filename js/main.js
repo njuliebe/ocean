@@ -18,20 +18,19 @@ let _speechTimer = null;
 // Bootstrap
 // ─────────────────────────────────────────────
 
-initOcean();
 initEffects();
 initCorals(onCoralClick);
 initToolbar();
 
-// Loading 动画 → 消退
+// 等视频就绪后隐藏 loading
 const loadingEl = document.getElementById('loading');
-setTimeout(() => {
+initOcean().then(() => {
   loadingEl.classList.add('fade-out');
   setTimeout(() => {
     loadingEl.style.display = 'none';
     speak('welcome');
   }, 800);
-}, 1200);
+});
 
 // 关闭完成面板
 document.getElementById('completion-close').addEventListener('click', () => {

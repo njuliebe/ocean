@@ -8,14 +8,14 @@ body {
 }
 
 /* =============================================
-   Canvas 层
+   背景图片层
    ============================================= */
 
-#ocean-canvas {
+#ocean-bg {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  display: block;
+  background: url('../assets/ocean-bg.png') center/cover no-repeat;
   z-index: 0;
 }
 
@@ -328,10 +328,11 @@ body {
 
 #toolbar {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
   background: rgba(2,13,26,0.65);
@@ -339,7 +340,7 @@ body {
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 28px;
-  padding: 10px 20px;
+  padding: 20px 10px;
   z-index: 100;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
@@ -368,11 +369,11 @@ body {
 
 /* 工具栏抖动动画 */
 @keyframes shake {
-  0%,100% { transform: translateX(-50%); }
-  20% { transform: translateX(calc(-50% - 6px)); }
-  40% { transform: translateX(calc(-50% + 6px)); }
-  60% { transform: translateX(calc(-50% - 4px)); }
-  80% { transform: translateX(calc(-50% + 4px)); }
+  0%,100% { transform: translateY(-50%); }
+  20% { transform: translateY(calc(-50% - 6px)); }
+  40% { transform: translateY(calc(-50% + 6px)); }
+  60% { transform: translateY(calc(-50% - 4px)); }
+  80% { transform: translateY(calc(-50% + 4px)); }
 }
 #toolbar.shake { animation: shake 0.4s ease; }
 
@@ -441,8 +442,27 @@ body {
    Responsive
    ============================================= */
 
+/* iPad 横屏 / 宽屏低高度设备 */
+@media (max-height: 850px) {
+  .coral-item { --coral-scale: 0.75; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
+}
+@media (max-height: 700px) {
+  .coral-item { --coral-scale: 0.6; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
+}
+
+/* 平板竖屏 */
+@media (max-width: 1024px) and (min-width: 601px) {
+  #toolbar { right: 14px; padding: 16px 8px; }
+  .tool-btn { padding: 6px 14px; }
+  .tool-icon { font-size: 22px; }
+  .tool-label { font-size: 10px; }
+  #speech-bubble { max-width: 220px; }
+}
+
+/* 手机 */
 @media (max-width: 600px) {
-  #toolbar { bottom: 12px; padding: 8px 12px; gap: 6px; }
+  .coral-item { --coral-scale: 0.55; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
+  #toolbar { right: 10px; padding: 12px 8px; gap: 6px; }
   .tool-btn { padding: 6px 12px; }
   .tool-icon { font-size: 20px; }
   .tool-label { font-size: 10px; }

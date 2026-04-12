@@ -18,8 +18,8 @@
     </div>
   </div>
 
-  <!-- Three.js 海洋背景 canvas（底层） -->
-  <canvas id="ocean-canvas"></canvas>
+  <!-- 海洋背景图片（底层） -->
+  <div id="ocean-bg"></div>
 
   <!-- 珊瑚层（HTML absolute 定位，叠在 canvas 上） -->
   <div id="coral-layer"></div>
@@ -35,7 +35,7 @@
       <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
-      <span class="progress-text" id="progress-text">0/5</span>
+      <span class="progress-text" id="progress-text">0/4</span>
     </div>
   </div>
 
@@ -90,14 +90,6 @@
     </div>
   </div>
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-    }
-  }
-  </script>
-  <script type="module" src="js/main.js"></script>
+  <script defer src="js/app.js"></script>
 </body>
 </html>
