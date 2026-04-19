@@ -545,27 +545,30 @@ body.tool-detect #magnifier { display: block; }
    Responsive
    ============================================= */
 
-/* iPad 横屏 / 宽屏低高度设备 */
-@media (max-height: 850px) {
-  .coral-item { --coral-scale: 0.75; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
-}
-@media (max-height: 700px) {
-  .coral-item { --coral-scale: 0.6; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
+/* 珊瑚位置和大小由 JS _getAdaptiveParams() 统一控制 */
+
+/* 屏幕比较方 — 潜水艇和工具栏位置调整 */
+@media (max-aspect-ratio: 16/10) {
+  #submarine { left: 4vw; top: 3vh; }
+  #submarine img { width: 220px; }
+  #toolbar { left: calc(4vw + 230px); top: calc(3vh + 130px); }
+  #toolbar.open { max-width: 400px; }
 }
 
-/* 平板竖屏 */
-@media (max-width: 1024px) and (min-width: 601px) {
-  #toolbar { right: 14px; padding: 16px 8px; }
-  .tool-btn { padding: 6px 14px; }
-  .tool-icon { font-size: 22px; }
-  .tool-label { font-size: 10px; }
+@media (max-aspect-ratio: 4/3) {
+  #submarine { left: 3vw; top: 2vh; }
+  #submarine img { width: 180px; }
+  #sub-btn { width: 24px; height: 24px; }
+  #toolbar { left: calc(3vw + 190px); top: calc(2vh + 110px); }
   #speech-bubble { max-width: 220px; }
 }
 
-/* 手机 */
-@media (max-width: 600px) {
-  .coral-item { --coral-scale: 0.55; transform: translate(-50%, -100%) scale(var(--coral-scale)); }
-  #toolbar { right: 10px; padding: 12px 8px; gap: 6px; }
+@media (max-aspect-ratio: 9/14) {
+  #submarine { left: 2vw; top: 1vh; }
+  #submarine img { width: 140px; }
+  #sub-btn { width: 20px; height: 20px; }
+  #toolbar { left: calc(2vw + 150px); top: calc(1vh + 85px); }
+  #toolbar.open { max-width: 300px; }
   .tool-btn { padding: 6px 12px; }
   .tool-icon { font-size: 20px; }
   .tool-label { font-size: 10px; }

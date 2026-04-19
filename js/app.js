@@ -519,11 +519,19 @@ function initCorals(onCoralClick) {
     _corals.push({ data: data, el: el, isRepaired: false });
   }
 
-  // 窗口大小变化时重新计算珊瑚 Y 位置
+  // 窗口大小变化时重新计算所有珊瑚位置和大小
   window.addEventListener('resize', function() {
+    var params = _getAdaptiveParams();
     for (var i = 0; i < _corals.length; i++) {
-      _corals[i].el.style.top = _calcCoralY(_corals[i].data.posY) + 'vh';
+      var c = _corals[i];
+      c.el.style.top = (c.data.posY - params.yShift) + 'vh';
+      var sw = c.data.width * params.scale;
+      c.el.style.setProperty('--coral-w', sw + 'px');
+      var img = c.el.querySelector('img');
+      if (img) img.style.width = sw + 'px';
     }
+    // 重绘装饰排
+    initDecoRows();
   });
 
   return _corals;
@@ -575,24 +583,38 @@ function getRepairedCount() {
 }
 
 /**
- * 根据屏幕宽高比计算珊瑚的实际 Y 位置（vh）
- * 背景图原始比例约 16:9，用 object-fit:cover 显示
- * 当屏幕更"方"（如 iPad 4:3），图片上下被裁切，沙地相对位置上移
+ * 根据屏幕宽高比计算自适应参数
+ * 屏幕越方（如 iPad 4:3），珊瑚越需要上移和缩小
  */
-function _calcCoralY(dataY) {
-  var screenRatio = window.innerWidth / window.innerHeight;
-  var imgRatio = 16 / 9;
-  if (screenRatio >= imgRatio) {
-    // 屏幕比图片更宽或一样 — 图片按宽度填满，上下可能有裁切少
-    return dataY;
+function _getAdaptiveParams() {
+  var ratio = window.innerWidth / window.innerHeight;
+  // 基准比例 16:9 ≈ 1.78，无需调整
+  if (ratio >= 1.78) return { yShift: 0, scale: 1 };
+  // 16:9 到 16:10 ≈ 1.6 之间，轻微缩小
+  if (ratio >= 1.6) {
+    var t = (1.78 - ratio) / (1.78 - 1.6);
+    return { yShift: t * 5, scale: 1 - t * 0.15 };
   }
-  // 屏幕比图片更方/更高 — 图片按宽度放不满，按高度填，左右裁切
-  // 沙地在图片底部约 60% 位置开始，cover 后位置会上移
-  // 计算图片实际显示时的缩放
-  var scale = window.innerHeight / (window.innerWidth / imgRatio);
-  // 图片被放大了 scale 倍，中心对齐，底部沙地位置上移
-  var offset = (scale - 1) * 0.5 * 100; // vh 偏移量
-  return dataY - offset * 0.35; // 珊瑚跟随上移（系数调节）
+  // 16:10 到 4:3 ≈ 1.33 之间
+  if (ratio >= 1.33) {
+    var t = (1.6 - ratio) / (1.6 - 1.33);
+    return { yShift: 5 + t * 10, scale: 0.85 - t * 0.55 }; // 缩小到0.3
+  }
+  // 4:3 到 3:4 ≈ 0.75（竖屏）
+  if (ratio >= 0.75) {
+    var t = (1.33 - ratio) / (1.33 - 0.75);
+    return { yShift: 12 + t * 10, scale: 0.6 - t * 0.2 }; // 上移22vh，缩小到0.4
+  }
+  // 手机竖屏
+  return { yShift: 22, scale: 0.35 };
+}
+
+function _calcCoralY(dataY) {
+  return dataY - _getAdaptiveParams().yShift;
+}
+
+function _getCoralScale() {
+  return _getAdaptiveParams().scale;
 }
 
 // 垃圾素材列表
@@ -675,13 +697,14 @@ function _createCoralElement(data) {
   div.style.left = data.posX + 'vw';
   div.style.top  = _calcCoralY(data.posY) + 'vh';
   div.style.setProperty('--sway-dur', data.swayDur);
-  div.style.setProperty('--coral-w', data.width + 'px');
+  var scaledWidth = data.width * _getCoralScale();
+  div.style.setProperty('--coral-w', scaledWidth + 'px');
   div.title = data.name || '';
 
   var img = new Image();
   img.src = 'assets/coral-group/' + data.file;
   img.alt = data.name || '';
-  img.style.width = data.width + 'px';
+  img.style.width = scaledWidth + 'px';
 
   img.onerror = function() {
     div.removeChild(img);
@@ -802,15 +825,16 @@ function _populateDecoRow(containerId, items) {
   var container = document.getElementById(containerId);
   if (!container) return;
   container.innerHTML = '';
+  var params = _getAdaptiveParams();
   for (var i = 0; i < items.length; i++) {
     var d = items[i];
     var div = document.createElement('div');
     div.className = 'deco-coral';
     div.style.left = d.posX + 'vw';
-    div.style.top  = d.posY + 'vh';
+    div.style.top  = (d.posY - params.yShift) + 'vh';
     var img = new Image();
     img.src = 'assets/coral-group/' + d.file;
-    img.style.width = d.width + 'px';
+    img.style.width = (d.width * params.scale) + 'px';
     div.appendChild(img);
     container.appendChild(div);
   }
