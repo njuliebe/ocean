@@ -29,7 +29,85 @@ body {
 }
 
 /* =============================================
-   珊瑚层
+   潜水艇
+   ============================================= */
+
+#submarine {
+  position: fixed;
+  left: 6vw;
+  top: 4vh;
+  z-index: 105;
+}
+#submarine img {
+  width: 340px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+  pointer-events: none;
+}
+/* 红色按钮热区——对准潜水艇腹部红色圆钮 */
+#sub-btn {
+  position: absolute;
+  width: 30px; height: 30px;
+  top: 55.5%; left: 66%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 2;
+  transition: box-shadow 0.3s;
+}
+#sub-btn:hover {
+  box-shadow: 0 0 24px 12px rgba(255,30,30,0.9), 0 0 48px 20px rgba(255,60,60,0.4);
+  background: rgba(255,40,40,0.3);
+}
+#sub-btn:active {
+  box-shadow: 0 0 30px 16px rgba(255,0,0,1), 0 0 60px 28px rgba(255,60,60,0.5);
+  background: rgba(255,40,40,0.5);
+}
+
+/* =============================================
+   珊瑚礁装饰排（后排 + 中排）
+   ============================================= */
+
+#coral-row-far, #coral-row-back, #coral-row-mid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+}
+#coral-row-far  { z-index: 2; }
+#coral-row-back { z-index: 3; }
+#coral-row-mid  { z-index: 4; }
+
+/* 装饰排的珊瑚项 */
+.deco-coral {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.deco-coral img {
+  display: block;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
+}
+
+/* 放大镜跟随鼠标（仅探测模式） */
+body.tool-detect { cursor: none; }
+
+#magnifier {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  display: none;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+body.tool-detect #magnifier { display: block; }
+
+/* =============================================
+   珊瑚层（前排，可操作）
    ============================================= */
 
 #coral-layer {
@@ -58,16 +136,29 @@ body {
 .coral-item {
   animation: sway var(--sway-dur, 4s) ease-in-out infinite;
 }
-.coral-item:nth-child(2) { animation-delay: -1.2s; }
-.coral-item:nth-child(3) { animation-delay: -2.4s; }
-.coral-item:nth-child(4) { animation-delay: -0.7s; }
-.coral-item:nth-child(5) { animation-delay: -3.1s; }
+.coral-item:nth-child(2)  { animation-delay: -1.2s; }
+.coral-item:nth-child(3)  { animation-delay: -2.4s; }
+.coral-item:nth-child(4)  { animation-delay: -0.7s; }
+.coral-item:nth-child(5)  { animation-delay: -3.1s; }
+.coral-item:nth-child(6)  { animation-delay: -1.8s; }
+.coral-item:nth-child(7)  { animation-delay: -0.3s; }
+.coral-item:nth-child(8)  { animation-delay: -2.7s; }
+.coral-item:nth-child(9)  { animation-delay: -1.5s; }
+.coral-item:nth-child(10) { animation-delay: -3.4s; }
+.coral-item:nth-child(11) { animation-delay: -0.9s; }
+.coral-item:nth-child(12) { animation-delay: -2.1s; }
 
 .coral-item img {
   width: var(--coral-w, 120px);
   display: block;
   transition: filter 2s ease;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+}
+
+/* 装饰珊瑚不需要点击交互 */
+.coral-item.decorative {
+  cursor: default;
+  pointer-events: none;
 }
 
 /* 悬停高亮 */
@@ -80,24 +171,24 @@ body {
   filter: grayscale(1) brightness(1.4) drop-shadow(0 8px 20px rgba(0,0,0,0.5));
 }
 .coral-item[data-problem="trash"] img {
-  filter: saturate(0.2) brightness(0.65) sepia(0.4) drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
 }
 .coral-item[data-problem="temperature"] img {
   filter: hue-rotate(-30deg) saturate(2.5) brightness(1.1) drop-shadow(0 0 24px rgba(255,80,0,0.7)) drop-shadow(0 8px 20px rgba(0,0,0,0.5));
 }
 
-/* 垃圾遮盖标记 */
-.coral-item[data-problem="trash"]::before {
-  content: '🗑️🥤🛍️';
+/* 垃圾覆盖图片 */
+.trash-overlay {
   position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
-  line-height: 1;
-  letter-spacing: -2px;
+  z-index: 2;
+  transition: opacity 0.8s ease;
+}
+.trash-overlay img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
 }
 
 /* 温度热浪效果 */
@@ -328,21 +419,33 @@ body {
 
 #toolbar {
   position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: calc(6vw + 350px);
+  top: calc(4vh + 200px);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 10px;
-  background: rgba(2,13,26,0.65);
+  gap: 6px;
+  background: rgba(2,13,26,0.75);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 28px;
-  padding: 20px 10px;
-  z-index: 100;
+  padding: 10px 16px;
+  z-index: 104;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  /* 默认隐藏，横向展开动画 */
+  max-width: 0;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-width 0.4s ease, opacity 0.3s ease, padding 0.4s ease;
+}
+#toolbar.open {
+  max-width: 500px;
+  padding: 10px 16px;
+  opacity: 1;
+  pointer-events: auto;
 }
 .tool-btn {
   display: flex;
@@ -369,11 +472,11 @@ body {
 
 /* 工具栏抖动动画 */
 @keyframes shake {
-  0%,100% { transform: translateY(-50%); }
-  20% { transform: translateY(calc(-50% - 6px)); }
-  40% { transform: translateY(calc(-50% + 6px)); }
-  60% { transform: translateY(calc(-50% - 4px)); }
-  80% { transform: translateY(calc(-50% + 4px)); }
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 #toolbar.shake { animation: shake 0.4s ease; }
 

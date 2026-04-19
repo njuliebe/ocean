@@ -9,72 +9,28 @@
 // ─────────────────────────────────────────────
 // 珊瑚静态数据
 // ─────────────────────────────────────────────
+// 珊瑚礁：12 个珊瑚组成，其中部分有问题需要修复
 export const CORAL_DATA = [
-  // {
-  //   id: 'brain',
-  //   name: '脑珊瑚',
-  //   emoji: '🪸',
-  //   problem: 'nutrition',
-  //   problemLabel: '营养不良 / 白化',
-  //   desc: '长期缺乏营养，珊瑚虫失去了共生藻，颜色变得灰白。',
-  //   tool: 'nutrition',
-  //   healthyColor: '粉红色',
-  //   posX: 18, posY: 92,
-  //   swayDur: '3.8s',
-  //   width: 195,
-  // },
-  {
-    id: 'staghorn',
-    name: '鹿角珊瑚',
-    emoji: '🪸',
-    problem: 'nutrition',
-    problemLabel: '严重白化',
-    desc: '高温和污染导致鹿角珊瑚完全失去颜色，已完全白化。',
-    tool: 'nutrition',
-    healthyColor: '鲜红色',
-    posX: 15, posY: 95,
-    swayDur: '4.5s',
-    width: 165,
-  },
-  {
-    id: 'seafan',
-    name: '海扇珊瑚',
-    emoji: '🌿',
-    problem: 'trash',
-    problemLabel: '垃圾覆盖',
-    desc: '人类丢弃的塑料袋和饮料瓶缠绕在珊瑚上，阻碍了它的呼吸。',
-    tool: 'clean',
-    healthyColor: '紫色',
-    posX: 37, posY: 96,
-    swayDur: '5.2s',
-    width: 210,
-  },
-  {
-    id: 'pillar',
-    name: '柱状珊瑚',
-    emoji: '🏛️',
-    problem: 'temperature',
-    problemLabel: '温度过高',
-    desc: '海水变暖让珊瑚承受热应激，泛出红色，急需降温。',
-    tool: 'temperature',
-    healthyColor: '青绿色',
-    posX: 57, posY: 94,
-    swayDur: '4.0s',
-    width: 173,
-  },
-  {
-    id: 'mushroom',
-    name: '蘑菇珊瑚',
-    emoji: '🍄',
-    problem: 'trash',
-    problemLabel: '污泥覆盖',
-    desc: '底部沉积物和垃圾覆盖了蘑菇珊瑚，让它无法进行光合作用。',
-    tool: 'clean',
-    healthyColor: '金黄色',
-    posX: 77, posY: 95,
-    swayDur: '3.5s',
-    width: 180,
-  },
+  { id: 'coral-1',  problem: null, file: 'coral-1.png',  posX: 3,  posY: 98, swayDur: '5.0s', width: 150 },
+  { id: 'coral-2',  problem: null, file: 'coral-2.png',  posX: 12, posY: 97, swayDur: '4.6s', width: 165 },
+  { id: 'coral-3',  problem: null, file: 'coral-3.png',  posX: 20, posY: 96, swayDur: '4.2s', width: 190 },
+  { id: 'coral-4',  problem: 'nutrition', problemLabel: '严重白化',
+    desc: '高温和污染导致珊瑚失去共生藻，颜色变得灰白。', tool: 'nutrition',
+    file: 'coral-4.png',  posX: 30, posY: 96, swayDur: '4.8s', width: 175 },
+  { id: 'coral-5',  problem: null, file: 'coral-5.png',  posX: 37, posY: 99, swayDur: '5.5s', width: 130 },
+  { id: 'coral-6',  problem: 'trash', problemLabel: '垃圾覆盖',
+    desc: '人类丢弃的塑料袋和饮料瓶缠绕在珊瑚上，阻碍了它的呼吸。', tool: 'clean',
+    file: 'coral-6.png',  posX: 44, posY: 95, swayDur: '4.0s', width: 185 },
+  { id: 'coral-7',  problem: null, file: 'coral-7.png',  posX: 52, posY: 97, swayDur: '5.8s', width: 260 },
+  { id: 'coral-8',  problem: 'temperature', problemLabel: '温度过高',
+    desc: '海水变暖让珊瑚承受热应激，急需降温。', tool: 'temperature',
+    file: 'coral-8.png',  posX: 62, posY: 95, swayDur: '4.3s', width: 175 },
+  { id: 'coral-9',  problem: null, file: 'coral-9.png',  posX: 70, posY: 96, swayDur: '4.7s', width: 160 },
+  { id: 'coral-10', problem: null, file: 'coral-10.png', posX: 78, posY: 96, swayDur: '4.1s', width: 170 },
+  { id: 'coral-11', problem: 'trash', problemLabel: '污泥覆盖',
+    desc: '底部沉积物和垃圾覆盖了珊瑚，让它无法进行光合作用。', tool: 'clean',
+    file: 'coral-11.png', posX: 86, posY: 96, swayDur: '4.5s', width: 170 },
+  { id: 'coral-12', problem: null, file: 'coral-12.png', posX: 94, posY: 97, swayDur: '5.1s', width: 175 },
 ];
 
 // 工具 → 珊瑚 problem 的映射
@@ -137,15 +93,21 @@ export function repairCoral(coral) {
 /** 重置所有珊瑚到初始状态（再玩一次） */
 export function resetCorals() {
   for (const coral of _corals) {
+    if (!coral.data.problem) continue; // 装饰珊瑚跳过
     coral.isRepaired = false;
     coral.el.setAttribute('data-problem', coral.data.problem);
     coral.el.classList.remove('repaired');
   }
 }
 
+/** 需要修复的珊瑚总数 */
+export function getProblemCount() {
+  return _corals.filter(c => c.data.problem).length;
+}
+
 /** 已修复数量 */
 export function getRepairedCount() {
-  return _corals.filter(c => c.isRepaired).length;
+  return _corals.filter(c => c.data.problem && c.isRepaired).length;
 }
 
 // ─────────────────────────────────────────────
@@ -155,22 +117,21 @@ export function getRepairedCount() {
 function _createCoralElement(data) {
   const div = document.createElement('div');
   div.className = 'coral-item';
+  if (!data.problem) div.classList.add('decorative');
   div.dataset.id = data.id;
-  div.dataset.problem = data.problem;
+  if (data.problem) div.dataset.problem = data.problem;
   div.style.left = data.posX + 'vw';
   div.style.top  = data.posY + 'vh';
   div.style.setProperty('--sway-dur', data.swayDur);
   div.style.setProperty('--coral-w', data.width + 'px');
   div.title = data.name;
 
-  // 尝试用 PNG 图片，失败则降级为大 emoji
   const img = new Image();
-  img.src = `assets/corals/${data.id}.png`;
+  img.src = `assets/coral-group/${data.file}`;
   img.alt = data.name;
   img.style.width = data.width + 'px';
 
   img.onerror = () => {
-    // 降级：用 emoji 渲染
     div.removeChild(img);
     const span = document.createElement('span');
     span.style.cssText = `
@@ -185,12 +146,14 @@ function _createCoralElement(data) {
 
   div.appendChild(img);
 
-  // 点击事件
-  div.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const coral = _corals.find(c => c.data.id === data.id);
-    if (coral && _onCoralClick) _onCoralClick(coral);
-  });
+  // 有问题的珊瑚才需要点击交互
+  if (data.problem) {
+    div.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const coral = _corals.find(c => c.data.id === data.id);
+      if (coral && _onCoralClick) _onCoralClick(coral);
+    });
+  }
 
   return div;
 }

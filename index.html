@@ -21,7 +21,16 @@
   <!-- 海洋背景图片（底层） -->
   <div id="ocean-bg"></div>
 
-  <!-- 珊瑚层（HTML absolute 定位，叠在 canvas 上） -->
+  <!-- 潜水艇 -->
+  <div id="submarine">
+    <img src="assets/marine.png" alt="潜水艇">
+    <div id="sub-btn"></div>
+  </div>
+
+  <!-- 珊瑚礁四排：最远排 → 后排 → 中排 → 前排(近，可操作) -->
+  <div id="coral-row-far"></div>
+  <div id="coral-row-back"></div>
+  <div id="coral-row-mid"></div>
   <div id="coral-layer"></div>
 
   <!-- Canvas 2D 修复粒子特效层（最顶层，pointer-events none） -->
@@ -35,7 +44,7 @@
       <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
-      <span class="progress-text" id="progress-text">0/4</span>
+      <span class="progress-text" id="progress-text">0/4</span><!-- 动态更新 -->
     </div>
   </div>
 
@@ -89,6 +98,9 @@
       <button id="replay-btn">🔄 再玩一次</button>
     </div>
   </div>
+
+  <!-- 放大镜光标（探测模式） -->
+  <div id="magnifier">🔍</div>
 
   <script defer src="js/app.js"></script>
 </body>
