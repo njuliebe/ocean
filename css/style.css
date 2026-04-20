@@ -285,27 +285,39 @@ body.tool-detect #magnifier { display: block; }
    ============================================= */
 
 #speech-bubble {
+  --arrow-left: 50%;
   position: fixed;
   top: 72px; right: 20px;
-  max-width: 260px;
-  background: rgba(2,20,45,0.75);
+  width: 240px;
+  background: rgba(2,20,45,0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(79,195,247,0.35);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 14px 16px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   z-index: 110;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+#speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: var(--arrow-left);
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(2,20,45,0.85);
 }
 #speech-bubble.hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-8px);
 }
 .speech-icon { font-size: 20px; flex-shrink: 0; }
-.speech-title { color: #4fc3f7; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.speech-title { color: #4fc3f7; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
 #speech-text  { color: #cde; font-size: 13px; line-height: 1.55; margin: 0; }
 
 /* =============================================
@@ -449,6 +461,7 @@ body.tool-detect #magnifier { display: block; }
 }
 .tool-btn:hover:not(.active) { background: rgba(255,255,255,0.07); color: #cde; }
 .tool-icon  { font-size: 36px; line-height: 1; }
+.tool-btn[data-tool="clean"] .tool-icon { font-size: 46px; }
 .tool-label { font-size: 16px; }
 .tool-btn.active .tool-label { color: #4fc3f7; }
 

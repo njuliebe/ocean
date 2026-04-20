@@ -148,6 +148,53 @@ function playSfxTemperature() {
   }
 }
 
+// 按钮音效：机械键盘敲击
+function playSfxButton() {
+  var ctx = _getAudioCtx();
+  var now = ctx.currentTime;
+  // 触底冲击：短噪声 + 带通滤波模拟塑料/金属撞击
+  var bufLen = Math.floor(ctx.sampleRate * 0.025);
+  var buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+  var d = buf.getChannelData(0);
+  for (var i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen * 0.3));
+  var hit = ctx.createBufferSource();
+  hit.buffer = buf;
+  var bp = ctx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = 3500;
+  bp.Q.value = 1.2;
+  var hg = ctx.createGain();
+  hg.gain.setValueAtTime(0.4, now);
+  hit.connect(bp); bp.connect(hg); hg.connect(ctx.destination);
+  hit.start(now);
+  // 轴体弹簧共振
+  var spring = ctx.createOscillator();
+  var sg = ctx.createGain();
+  spring.type = 'sine';
+  spring.frequency.setValueAtTime(4200, now);
+  spring.frequency.exponentialRampToValueAtTime(3000, now + 0.03);
+  sg.gain.setValueAtTime(0.06, now);
+  sg.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+  spring.connect(sg); sg.connect(ctx.destination);
+  spring.start(now);
+  spring.stop(now + 0.05);
+  // 回弹声
+  var bufLen2 = Math.floor(ctx.sampleRate * 0.015);
+  var buf2 = ctx.createBuffer(1, bufLen2, ctx.sampleRate);
+  var d2 = buf2.getChannelData(0);
+  for (var i = 0; i < bufLen2; i++) d2[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufLen2 * 0.25));
+  var up = ctx.createBufferSource();
+  up.buffer = buf2;
+  var bp2 = ctx.createBiquadFilter();
+  bp2.type = 'bandpass';
+  bp2.frequency.value = 4500;
+  bp2.Q.value = 1.5;
+  var ug = ctx.createGain();
+  ug.gain.setValueAtTime(0.2, now + 0.06);
+  up.connect(bp2); bp2.connect(ug); ug.connect(ctx.destination);
+  up.start(now + 0.06);
+}
+
 // ═════════════════════════════════════════════
 // effects.js
 // ═════════════════════════════════════════════
@@ -945,6 +992,7 @@ function initToolbar() {
   // 点击潜水艇红色按钮：切换工具栏展开/收起
   subBtn.addEventListener('click', function(e) {
     e.stopPropagation();
+    playSfxButton();
     toolbar.classList.toggle('open');
   });
 
@@ -964,11 +1012,11 @@ function initToolbar() {
 function onCoralClick(coral) {
   if (_activeTool === 'detect') {
     if (coral.isRepaired) {
-      showSpeechBubble('提示', MESSAGES.alreadyRepaired);
+      showSpeechBubble('提示', MESSAGES.alreadyRepaired, coral.el);
       speak('alreadyRepaired');
     } else {
       var msg = MESSAGES.detect[coral.data.problem];
-      showSpeechBubble('探测结果', msg);
+      showSpeechBubble('探测结果', msg, coral.el);
       speak('detect_' + coral.data.problem);
     }
     return;
@@ -982,14 +1030,14 @@ function onCoralClick(coral) {
 
 function tryRepair(coral, tool) {
   if (coral.isRepaired) {
-    showSpeechBubble('提示', MESSAGES.alreadyRepaired);
+    showSpeechBubble('提示', MESSAGES.alreadyRepaired, coral.el);
     speak('alreadyRepaired');
     return;
   }
   var expectedProblem = TOOL_PROBLEM_MAP[tool];
   if (!expectedProblem) return;
   if (expectedProblem !== coral.data.problem) {
-    showSpeechBubble('提示', MESSAGES.wrongTool);
+    showSpeechBubble('提示', MESSAGES.wrongTool, coral.el);
     speak('wrongTool');
     shakeToolbar();
     return;
@@ -1002,7 +1050,7 @@ function tryRepair(coral, tool) {
     case 'nutrition':   playSfxNutrition(); break;
     case 'temperature': playSfxTemperature(); break;
   }
-  showSpeechBubble('修复成功 ✨', MESSAGES.repair[coral.data.problem]);
+  showSpeechBubble('修复成功 ✨', MESSAGES.repair[coral.data.problem], coral.el);
   speak('repair_' + coral.data.problem);
   updateProgress();
 
@@ -1053,10 +1101,41 @@ function openInfoPanel(coral) {
   document.getElementById('info-panel').classList.remove('hidden');
 }
 
-function showSpeechBubble(title, text) {
+function showSpeechBubble(title, text, coralEl) {
   document.getElementById('speech-title').textContent = title;
   document.getElementById('speech-text').textContent  = text;
   var bubble = document.getElementById('speech-bubble');
+
+  // 定位到珊瑚上方
+  if (coralEl) {
+    var rect = coralEl.getBoundingClientRect();
+    var bw = 240;
+    var cx = rect.left + rect.width / 2;
+    var left = cx - bw / 2;
+    // 边界保护
+    if (left < 10) left = 10;
+    if (left + bw > window.innerWidth - 10) left = window.innerWidth - bw - 10;
+    var top = rect.top - 20;
+    // 如果太靠上则放到珊瑚下方
+    if (top < 60) top = rect.bottom + 15;
+
+    bubble.style.left = left + 'px';
+    bubble.style.top  = top + 'px';
+    bubble.style.right = 'auto';
+    bubble.style.transform = 'translateY(-100%)';
+
+    // 小三角指向珊瑚
+    var arrowLeft = cx - left;
+    arrowLeft = Math.max(20, Math.min(bw - 20, arrowLeft));
+    bubble.style.setProperty('--arrow-left', arrowLeft + 'px');
+  } else {
+    // 无珊瑚时默认右上角
+    bubble.style.left = 'auto';
+    bubble.style.right = '20px';
+    bubble.style.top = '72px';
+    bubble.style.transform = 'none';
+  }
+
   bubble.classList.remove('hidden');
   if (_speechTimer) clearTimeout(_speechTimer);
   _speechTimer = setTimeout(function() {
