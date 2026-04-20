@@ -8,16 +8,14 @@
 
 const MESSAGES = {
   detect: {
-    'coral-4':  '这颗珊瑚完全白化了！快用营养液救救它吧！',
-    'coral-6':  '这颗珊瑚被垃圾覆盖啦！用清理工具把垃圾清除掉吧！',
-    'coral-8':  '这颗珊瑚周围水温太高了！快用调温工具降温吧！',
-    'coral-11': '这颗珊瑚被垃圾覆盖了！用清理工具帮它清洁吧！',
+    nutrition:   '这颗珊瑚完全白化了！快用营养液救救它吧！',
+    trash:       '这颗珊瑚被垃圾覆盖啦！用清理工具把垃圾清除掉吧！',
+    temperature: '这颗珊瑚周围水温太高了！快用调温工具降温吧！',
   },
   repair: {
-    'coral-4':  '这颗珊瑚恢复了健康的颜色，太漂亮啦！',
-    'coral-6':  '这颗珊瑚的垃圾清除干净了，太好了！',
-    'coral-8':  '这颗珊瑚降温成功，恢复了美丽的颜色！',
-    'coral-11': '这颗珊瑚的垃圾清除干净了，太棒了！',
+    nutrition:   '这颗珊瑚恢复了健康的颜色，太漂亮啦！',
+    trash:       '这颗珊瑚的垃圾清除干净了，太好了！',
+    temperature: '这颗珊瑚降温成功，恢复了美丽的颜色！',
   },
   wrongTool:      '这个工具不对哦，换一个试试吧！',
   alreadyRepaired:'这颗珊瑚已经恢复健康了，去看看其他珊瑚吧！',
@@ -26,21 +24,16 @@ const MESSAGES = {
 };
 
 const AUDIO_FILES = {
-  // 通用语音（已有）
-  welcome:           'audio/welcome.mp3',
-  wrongTool:         'audio/wrongTool.mp3',
-  alreadyRepaired:   'audio/alreadyRepaired.mp3',
-  allDone:           'audio/allDone.mp3',
-  // 探测语音（需要提供）
-  'detect_coral-4':  'audio/detect_coral-4.mp3',
-  'detect_coral-6':  'audio/detect_coral-6.mp3',
-  'detect_coral-8':  'audio/detect_coral-8.mp3',
-  'detect_coral-11': 'audio/detect_coral-11.mp3',
-  // 修复语音（需要提供）
-  'repair_coral-4':  'audio/repair_coral-4.mp3',
-  'repair_coral-6':  'audio/repair_coral-6.mp3',
-  'repair_coral-8':  'audio/repair_coral-8.mp3',
-  'repair_coral-11': 'audio/repair_coral-11.mp3',
+  welcome:              'audio/welcome.mp3',
+  wrongTool:            'audio/wrongTool.mp3',
+  alreadyRepaired:      'audio/alreadyRepaired.mp3',
+  allDone:              'audio/allDone.mp3',
+  'detect_nutrition':   'audio/detect_coral-4.mp3',
+  'detect_trash':       'audio/detect_coral-6.mp3',
+  'detect_temperature': 'audio/detect_coral-8.mp3',
+  'repair_nutrition':   'audio/repair_coral-4.mp3',
+  'repair_trash':       'audio/repair_coral-6.mp3',
+  'repair_temperature': 'audio/repair_coral-8.mp3',
 };
 
 let _currentAudio = null;
@@ -463,40 +456,124 @@ function _drawCrystal(p) {
 }
 
 // ═════════════════════════════════════════════
-// corals.js
+// corals.js — 统一五排珊瑚系统
 // ═════════════════════════════════════════════
 
-var CORAL_DATA = [
-  // ── 装饰珊瑚 ──
-  { id: 'coral-1',  problem: null, file: 'coral-1.png',  posX: 3,  posY: 98, swayDur: '5.0s', width: 150 },
-  { id: 'coral-2',  problem: null, file: 'coral-2.png',  posX: 10, posY: 97, swayDur: '4.6s', width: 165 },
-  { id: 'coral-3',  problem: null, file: 'coral-3.png',  posX: 20, posY: 96, swayDur: '4.2s', width: 190 },
-  // ── 有问题 ──
-  { id: 'coral-4',  problem: 'nutrition', problemLabel: '严重白化',
-    desc: '高温和污染导致珊瑚失去共生藻，颜色变得灰白。', tool: 'nutrition',
-    file: 'coral-4.png',  posX: 28, posY: 96, swayDur: '4.8s', width: 175 },
-  // ── 装饰 ──
-  { id: 'coral-5',  problem: null, file: 'coral-5.png',  posX: 34, posY: 97, swayDur: '5.5s', width: 130 },
-  // ── 有问题 ──
-  { id: 'coral-6',  problem: 'trash', problemLabel: '垃圾覆盖',
-    desc: '人类丢弃的塑料袋和饮料瓶缠绕在珊瑚上，阻碍了它的呼吸。', tool: 'clean',
-    file: 'coral-6.png',  posX: 42, posY: 95, swayDur: '4.0s', width: 185 },
-  // ── 装饰 ──
-  { id: 'coral-7',  problem: null, file: 'coral-7.png',  posX: 53, posY: 97, swayDur: '5.8s', width: 260 },
-  // ── 有问题 ──
-  { id: 'coral-8',  problem: 'temperature', problemLabel: '温度过高',
-    desc: '海水变暖让珊瑚承受热应激，急需降温。', tool: 'temperature',
-    file: 'coral-8.png',  posX: 63, posY: 95, swayDur: '4.3s', width: 175 },
-  // ── 装饰 ──
-  { id: 'coral-9',  problem: null, file: 'coral-9.png',  posX: 70, posY: 96, swayDur: '4.7s', width: 160 },
-  { id: 'coral-10', problem: null, file: 'coral-10.png', posX: 78, posY: 96, swayDur: '4.1s', width: 170 },
-  // ── 有问题 ──
-  { id: 'coral-11', problem: 'trash', problemLabel: '垃圾覆盖',
-    desc: '人类丢弃的垃圾覆盖了珊瑚，让它无法进行光合作用。', tool: 'clean',
-    file: 'coral-11.png', posX: 86, posY: 96, swayDur: '4.5s', width: 170 },
-  // ── 装饰 ──
-  { id: 'coral-12', problem: null, file: 'coral-12.png', posX: 94, posY: 97, swayDur: '5.1s', width: 175 },
+var CORAL_FILES = [
+  'coral-1.png','coral-2.png','coral-3.png','coral-4.png',
+  'coral-5.png','coral-6.png','coral-7.png','coral-8.png',
+  'coral-9.png','coral-10.png','coral-11.png','coral-12.png',
 ];
+
+// 四排珊瑚容器（从远到近）
+var ROW_CONTAINERS = [
+  'coral-row-far',
+  'coral-row-back',
+  'coral-row-mid',
+  'coral-layer',
+];
+
+// 四排珊瑚 Y 基线（vh），排间距从远到近递增以匹配透视
+var ROW_BASE_Y = [63, 74, 85, 94];
+var ROW_Y_RANGE = [1.5, 1.5, 1.5, 1.5];
+var ROW_BASE_W = [160, 178, 196, 215];
+var CORALS_PER_ROW = 17;
+var SPACING_VW = 5.5;
+
+// 12 个有问题的珊瑚：[排(0-3), 在该排中第几颗(0-15), 问题类型]
+// 问题珊瑚分布在四排，每排选不被遮挡的位置
+var PROBLEM_POSITIONS = [
+  // 白化（中间区域，四排都有）
+  [3, 6,  'nutrition'],
+  [3, 7,  'nutrition'],
+  [3, 8,  'nutrition'],
+  [3, 9,  'nutrition'],
+  [3, 10, 'nutrition'],
+  [3, 11, 'nutrition'],
+  [2, 5,  'nutrition'],
+  [2, 7,  'nutrition'],
+  [2, 9,  'nutrition'],
+  [2, 11, 'nutrition'],
+  [1, 6,  'nutrition'],
+  [1, 8,  'nutrition'],
+  [1, 10, 'nutrition'],
+  [0, 7,  'nutrition'],
+  [0, 9,  'nutrition'],
+  // 垃圾（两侧）
+  [3, 1,  'trash'],
+  [3, 15, 'trash'],
+  [1, 3,  'trash'],
+  // 温度（两侧）
+  [3, 14, 'temperature'],
+  [2, 2,  'temperature'],
+  [0, 13, 'temperature'],
+];
+
+var PROBLEM_LABELS = {
+  nutrition:   '严重白化',
+  trash:       '垃圾覆盖',
+  temperature: '温度过高',
+};
+
+var PROBLEM_DESCS = {
+  nutrition:   '高温和污染导致珊瑚失去共生藻，颜色变得灰白。',
+  trash:       '人类丢弃的塑料袋和饮料瓶缠绕在珊瑚上，阻碍了它的呼吸。',
+  temperature: '海水变暖让珊瑚承受热应激，急需降温。',
+};
+
+// 确定性伪随机（保证每次加载布局一致）
+var _seed = 42;
+function _srand() {
+  _seed = (_seed * 16807) % 2147483647;
+  return (_seed - 1) / 2147483646;
+}
+
+// 生成全部珊瑚数据
+function _buildAllCorals() {
+  _seed = 42;
+  var all = [];
+  var globalId = 0;
+
+  // 构建问题查找表
+  var problemLookup = {};
+  for (var p = 0; p < PROBLEM_POSITIONS.length; p++) {
+    var pp = PROBLEM_POSITIONS[p];
+    problemLookup[pp[0] + '-' + pp[1]] = pp[2];
+  }
+
+  var trashIdx = 0;
+  for (var r = 0; r < 4; r++) {
+    for (var i = 0; i < CORALS_PER_ROW; i++) {
+      globalId++;
+      var posX = 5 + i * SPACING_VW + (_srand() - 0.5) * 2;
+      var posY = ROW_BASE_Y[r] + (_srand() - 0.5) * ROW_Y_RANGE[r] * 2;
+      var width = ROW_BASE_W[r] + (_srand() - 0.5) * 30;
+      var fileIdx = Math.floor(_srand() * CORAL_FILES.length);
+      var swayDur = (4.0 + _srand() * 2.0).toFixed(1) + 's';
+      var pKey = r + '-' + i;
+      var prob = problemLookup[pKey] || null;
+
+      all.push({
+        id: 'c-' + globalId,
+        row: r,
+        container: ROW_CONTAINERS[r],
+        file: CORAL_FILES[fileIdx],
+        posX: Math.round(posX * 10) / 10,
+        posY: Math.round(posY * 10) / 10,
+        swayDur: swayDur,
+        width: Math.round(width),
+        problem: prob,
+        problemLabel: prob ? PROBLEM_LABELS[prob] : null,
+        tool: prob ? (prob === 'trash' ? 'clean' : prob) : null,
+        desc: prob ? PROBLEM_DESCS[prob] : null,
+        trashTemplate: prob === 'trash' ? (trashIdx++) : -1,
+      });
+    }
+  }
+  return all;
+}
+
+var CORAL_DATA = _buildAllCorals();
 
 var TOOL_PROBLEM_MAP = {
   nutrition:   'nutrition',
@@ -510,28 +587,34 @@ var _onCoralClick = null;
 function initCorals(onCoralClick) {
   _onCoralClick = onCoralClick;
   _corals = [];
-  var layer = document.getElementById('coral-layer');
-  layer.innerHTML = '';
+
+  // 清空所有容器
+  for (var c = 0; c < ROW_CONTAINERS.length; c++) {
+    var container = document.getElementById(ROW_CONTAINERS[c]);
+    if (container) container.innerHTML = '';
+  }
+
+  _applyVisualScale();
+
   for (var i = 0; i < CORAL_DATA.length; i++) {
     var data = CORAL_DATA[i];
     var el = _createCoralElement(data);
-    layer.appendChild(el);
+    var target = document.getElementById(data.container);
+    if (target) target.appendChild(el);
     _corals.push({ data: data, el: el, isRepaired: false });
   }
 
-  // 窗口大小变化时重新计算所有珊瑚位置和大小
   window.addEventListener('resize', function() {
+    _applyVisualScale();
     var params = _getAdaptiveParams();
     for (var i = 0; i < _corals.length; i++) {
-      var c = _corals[i];
-      c.el.style.top = (c.data.posY - params.yShift) + 'vh';
-      var sw = c.data.width * params.scale;
-      c.el.style.setProperty('--coral-w', sw + 'px');
-      var img = c.el.querySelector('img');
+      var cc = _corals[i];
+      cc.el.style.top = _calcCoralY(cc.data.posY) + 'vh';
+      var sw = cc.data.width * params.scale;
+      cc.el.style.setProperty('--coral-w', sw + 'px');
+      var img = cc.el.querySelector('img');
       if (img) img.style.width = sw + 'px';
     }
-    // 重绘装饰排
-    initDecoRows();
   });
 
   return _corals;
@@ -543,7 +626,6 @@ function repairCoral(coral) {
   if (coral.isRepaired) return;
   coral.isRepaired = true;
   var el = coral.el;
-  // 垃圾珊瑚：移除垃圾图片
   if (coral.data.problem === 'trash') {
     _removeTrashOverlay(el);
   }
@@ -559,9 +641,8 @@ function resetCorals() {
     coral.isRepaired = false;
     coral.el.setAttribute('data-problem', coral.data.problem);
     coral.el.classList.remove('repaired');
-    // 垃圾珊瑚：恢复垃圾图片
     if (coral.data.problem === 'trash') {
-      _restoreTrashOverlay(coral.el, coral.data.id);
+      _restoreTrashOverlay(coral.el, coral.data.trashTemplate);
     }
   }
 }
@@ -582,42 +663,80 @@ function getRepairedCount() {
   return count;
 }
 
-/**
- * 根据屏幕宽高比计算自适应参数
- * 屏幕越方（如 iPad 4:3），珊瑚越需要上移和缩小
- */
+function _getVisualScale() {
+  var vw = window.innerWidth;
+  return Math.min(1.5, Math.max(0.9, vw / 1400));
+}
+
+function _applyVisualScale() {
+  document.documentElement.style.setProperty('--coral-visual-scale', _getVisualScale());
+}
+
 function _getAdaptiveParams() {
-  var ratio = window.innerWidth / window.innerHeight;
-  // 基准比例 16:9 ≈ 1.78，无需调整
-  if (ratio >= 1.78) return { yShift: 0, scale: 1 };
-  // 16:9 到 16:10 ≈ 1.6 之间，轻微缩小
-  if (ratio >= 1.6) {
-    var t = (1.78 - ratio) / (1.78 - 1.6);
-    return { yShift: t * 5, scale: 1 - t * 0.15 };
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var ratio = vw / vh;
+  var visualScale = _getVisualScale();
+
+  // 宽屏桌面 (16:10 及更宽 + 宽度足够)：前排从 94vh 推回到 98vh
+  if (ratio >= 1.6 && vw >= 1400) return { yShift: -4, scale: 1, rowSqueeze: 1 };
+
+  // ── 基于实际像素计算 ──
+
+  // 1) 获取潜水艇实际占用高度
+  var subImg = document.querySelector('#submarine img');
+  var subW = 0;
+  if (subImg) subW = subImg.offsetWidth || subImg.clientWidth;
+  if (!subW) {
+    if (ratio < 0.75)      subW = 120;
+    else if (ratio < 1.33) subW = 160;
+    else if (ratio < 1.5)  subW = 200;
+    else if (ratio < 1.6)  subW = 260;
+    else                   subW = 400;
   }
-  // 16:10 到 4:3 ≈ 1.33 之间
-  if (ratio >= 1.33) {
-    var t = (1.6 - ratio) / (1.6 - 1.33);
-    return { yShift: 5 + t * 10, scale: 0.85 - t * 0.55 }; // 缩小到0.3
-  }
-  // 4:3 到 3:4 ≈ 0.75（竖屏）
-  if (ratio >= 0.75) {
-    var t = (1.33 - ratio) / (1.33 - 0.75);
-    return { yShift: 12 + t * 10, scale: 0.6 - t * 0.2 }; // 上移22vh，缩小到0.4
-  }
-  // 手机竖屏
-  return { yShift: 22, scale: 0.35 };
+  var subH = subW * 1.776;
+  var subBottomPx = vh * 0.02 + subH;
+
+  // 2) 珊瑚可用区域
+  var subInfluencePx = Math.min(subBottomPx, vh * 0.20);
+  var coralTopPx     = subInfluencePx + 15;
+  var coralBottomPx  = vh * 0.90;
+  var zonePx = Math.max(coralBottomPx - coralTopPx, vh * 0.3);
+
+  // 3) 前排目标位置（前排基线 94vh）
+  var frontVh = (coralBottomPx / vh) * 100;
+  var yShift  = 94 - frontVh;
+
+  // 4) 排间压缩：31vh 基础跨度映射到可用区域
+  var spanVh     = (zonePx / vh) * 100;
+  var rowSqueeze = Math.min(1, spanVh / 31);
+
+  // 5) 缩放：基于可视缩放比动态计算
+  var slotPx      = zonePx / 4;
+  var slotRatio   = vh < 600 ? 1.0 : 0.78;
+  var maxCoralH   = slotPx * slotRatio;
+  var maxCoralW   = maxCoralH / (0.75 * visualScale);
+  var scale        = Math.min(1, maxCoralW / 215);
+  var widthScale  = Math.max(0.28, vw / 1440);
+  scale = Math.min(scale, widthScale);
+  scale = Math.max(0.25, scale);
+
+  return { yShift: yShift, scale: scale, rowSqueeze: rowSqueeze };
 }
 
 function _calcCoralY(dataY) {
-  return dataY - _getAdaptiveParams().yShift;
+  var params = _getAdaptiveParams();
+  var frontBaseY = ROW_BASE_Y[3]; // 94
+  var distFromFront = frontBaseY - dataY;
+  var squeezedDist = distFromFront * params.rowSqueeze;
+  return (frontBaseY - params.yShift) - squeezedDist;
 }
 
 function _getCoralScale() {
   return _getAdaptiveParams().scale;
 }
 
-// 垃圾素材列表
+// 垃圾素材
 var TRASH_IMAGES = [
   'assets/trash/bag-1.png',
   'assets/trash/bag-2.png',
@@ -628,28 +747,36 @@ var TRASH_IMAGES = [
   'assets/trash/net-2.png',
 ];
 
-// 每颗垃圾珊瑚上叠加的垃圾配置（位置、大小、旋转各不同）
-var TRASH_CONFIGS = {
-  'coral-6': [
-    { src: 0, top: '5%',  left: '0%',   size: 82, rotate: -15 },
-    { src: 3, top: '10%', left: '55%',  size: 68, rotate: 25 },
-    { src: 5, top: '30%', left: '20%',  size: 105, rotate: 5 },
-    { src: 1, top: '45%', left: '60%',  size: 75, rotate: -20 },
-    { src: 4, top: '60%', left: '-5%',  size: 63, rotate: 30 },
-    { src: 6, top: '55%', left: '45%',  size: 90, rotate: -10 },
+// 垃圾覆盖模板（循环使用）
+var TRASH_TEMPLATES = [
+  [
+    { src: 0, top: '-5%',  left: '-10%',  size: 120, rotate: -15 },
+    { src: 3, top: '5%',   left: '50%',   size: 100, rotate: 25 },
+    { src: 5, top: '25%',  left: '10%',   size: 145, rotate: 5 },
+    { src: 1, top: '40%',  left: '55%',   size: 110, rotate: -20 },
+    { src: 4, top: '55%',  left: '-10%',  size: 95,  rotate: 30 },
+    { src: 6, top: '50%',  left: '40%',   size: 130, rotate: -10 },
   ],
-  'coral-11': [
-    { src: 1, top: '0%',  left: '45%',  size: 75, rotate: 12 },
-    { src: 5, top: '15%', left: '-5%',  size: 98, rotate: -8 },
-    { src: 4, top: '25%', left: '55%',  size: 63, rotate: -25 },
-    { src: 0, top: '40%', left: '10%',  size: 82, rotate: 18 },
-    { src: 6, top: '50%', left: '50%',  size: 87, rotate: -12 },
-    { src: 2, top: '60%', left: '25%',  size: 72, rotate: 22 },
+  [
+    { src: 1, top: '-5%',  left: '40%',   size: 110, rotate: 12 },
+    { src: 5, top: '10%',  left: '-10%',  size: 140, rotate: -8 },
+    { src: 4, top: '20%',  left: '50%',   size: 95,  rotate: -25 },
+    { src: 0, top: '35%',  left: '5%',    size: 120, rotate: 18 },
+    { src: 6, top: '45%',  left: '45%',   size: 125, rotate: -12 },
+    { src: 2, top: '55%',  left: '20%',   size: 105, rotate: 22 },
   ],
-};
+  [
+    { src: 2, top: '-5%',  left: '10%',   size: 115, rotate: -12 },
+    { src: 4, top: '5%',   left: '45%',   size: 100, rotate: 22 },
+    { src: 0, top: '20%',  left: '-10%',  size: 135, rotate: 5 },
+    { src: 6, top: '30%',  left: '40%',   size: 125, rotate: -15 },
+    { src: 3, top: '45%',  left: '15%',   size: 105, rotate: 28 },
+    { src: 1, top: '50%',  left: '50%',   size: 110, rotate: -8 },
+  ],
+];
 
-function _addTrashOverlay(div, coralId) {
-  var configs = TRASH_CONFIGS[coralId];
+function _addTrashOverlay(div, templateIdx) {
+  var configs = TRASH_TEMPLATES[templateIdx % TRASH_TEMPLATES.length];
   if (!configs) return;
   for (var i = 0; i < configs.length; i++) {
     var c = configs[i];
@@ -672,7 +799,6 @@ function _removeTrashOverlay(el) {
   for (var i = 0; i < items.length; i++) {
     items[i].style.opacity = '0';
   }
-  // 动画结束后移除 DOM
   setTimeout(function() {
     var remaining = el.querySelectorAll('.trash-overlay');
     for (var j = 0; j < remaining.length; j++) {
@@ -681,11 +807,10 @@ function _removeTrashOverlay(el) {
   }, 800);
 }
 
-function _restoreTrashOverlay(el, coralId) {
-  // 先清除旧的
+function _restoreTrashOverlay(el, templateIdx) {
   var old = el.querySelectorAll('.trash-overlay');
   for (var i = 0; i < old.length; i++) old[i].remove();
-  _addTrashOverlay(el, coralId);
+  _addTrashOverlay(el, templateIdx);
 }
 
 function _createCoralElement(data) {
@@ -699,29 +824,25 @@ function _createCoralElement(data) {
   div.style.setProperty('--sway-dur', data.swayDur);
   var scaledWidth = data.width * _getCoralScale();
   div.style.setProperty('--coral-w', scaledWidth + 'px');
-  div.title = data.name || '';
 
   var img = new Image();
   img.src = 'assets/coral-group/' + data.file;
-  img.alt = data.name || '';
   img.style.width = scaledWidth + 'px';
 
   img.onerror = function() {
     div.removeChild(img);
     var span = document.createElement('span');
     span.style.cssText = 'display:block;font-size:' + (data.width * 0.8) + 'px;line-height:1;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.5));';
-    span.textContent = data.emoji || '🪸';
+    span.textContent = '🪸';
     div.appendChild(span);
   };
 
   div.appendChild(img);
 
-  // 垃圾覆盖图片
   if (data.problem === 'trash') {
-    _addTrashOverlay(div, data.id);
+    _addTrashOverlay(div, data.trashTemplate);
   }
 
-  // 只有有问题的珊瑚才需要点击交互
   if (data.problem) {
     div.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -734,113 +855,6 @@ function _createCoralElement(data) {
 }
 
 // ═════════════════════════════════════════════
-// 装饰珊瑚排（中排 + 后排）
-// ═════════════════════════════════════════════
-
-// 中间层：密集珊瑚群，与前排大小一致，紧挨着
-var DECO_MID_ROW = [
-  { file: 'coral-3.png',  posX: -2, posY: 86, width: 170 },
-  { file: 'coral-9.png',  posX: 3,  posY: 84, width: 155 },
-  { file: 'coral-5.png',  posX: 7,  posY: 87, width: 140 },
-  { file: 'coral-11.png', posX: 11, posY: 85, width: 165 },
-  { file: 'coral-1.png',  posX: 16, posY: 86, width: 150 },
-  { file: 'coral-8.png',  posX: 20, posY: 84, width: 160 },
-  { file: 'coral-4.png',  posX: 25, posY: 87, width: 155 },
-  { file: 'coral-7.png',  posX: 30, posY: 85, width: 180 },
-  { file: 'coral-12.png', posX: 35, posY: 86, width: 160 },
-  { file: 'coral-2.png',  posX: 39, posY: 84, width: 150 },
-  { file: 'coral-6.png',  posX: 44, posY: 87, width: 165 },
-  { file: 'coral-10.png', posX: 48, posY: 85, width: 150 },
-  { file: 'coral-3.png',  posX: 53, posY: 86, width: 170 },
-  { file: 'coral-9.png',  posX: 57, posY: 84, width: 155 },
-  { file: 'coral-5.png',  posX: 62, posY: 87, width: 140 },
-  { file: 'coral-8.png',  posX: 66, posY: 85, width: 160 },
-  { file: 'coral-1.png',  posX: 71, posY: 86, width: 150 },
-  { file: 'coral-12.png', posX: 75, posY: 84, width: 165 },
-  { file: 'coral-4.png',  posX: 80, posY: 87, width: 155 },
-  { file: 'coral-11.png', posX: 84, posY: 85, width: 160 },
-  { file: 'coral-6.png',  posX: 89, posY: 86, width: 155 },
-  { file: 'coral-2.png',  posX: 93, posY: 84, width: 150 },
-  { file: 'coral-10.png', posX: 98, posY: 86, width: 155 },
-];
-
-// 后层：同样大小，紧密填充，与中间层交错形成一整片珊瑚群
-var DECO_BACK_ROW = [
-  { file: 'coral-10.png', posX: -1, posY: 79, width: 155 },
-  { file: 'coral-6.png',  posX: 4,  posY: 77, width: 150 },
-  { file: 'coral-8.png',  posX: 8,  posY: 80, width: 160 },
-  { file: 'coral-2.png',  posX: 13, posY: 78, width: 145 },
-  { file: 'coral-12.png', posX: 17, posY: 79, width: 155 },
-  { file: 'coral-5.png',  posX: 22, posY: 77, width: 140 },
-  { file: 'coral-4.png',  posX: 26, posY: 80, width: 155 },
-  { file: 'coral-9.png',  posX: 31, posY: 78, width: 150 },
-  { file: 'coral-3.png',  posX: 35, posY: 79, width: 160 },
-  { file: 'coral-11.png', posX: 40, posY: 77, width: 150 },
-  { file: 'coral-1.png',  posX: 44, posY: 80, width: 155 },
-  { file: 'coral-7.png',  posX: 49, posY: 78, width: 170 },
-  { file: 'coral-6.png',  posX: 54, posY: 79, width: 150 },
-  { file: 'coral-10.png', posX: 58, posY: 77, width: 155 },
-  { file: 'coral-2.png',  posX: 63, posY: 80, width: 145 },
-  { file: 'coral-8.png',  posX: 67, posY: 78, width: 160 },
-  { file: 'coral-5.png',  posX: 72, posY: 79, width: 150 },
-  { file: 'coral-12.png', posX: 76, posY: 77, width: 155 },
-  { file: 'coral-3.png',  posX: 81, posY: 80, width: 150 },
-  { file: 'coral-9.png',  posX: 85, posY: 78, width: 155 },
-  { file: 'coral-4.png',  posX: 90, posY: 79, width: 148 },
-  { file: 'coral-11.png', posX: 94, posY: 77, width: 160 },
-  { file: 'coral-1.png',  posX: 99, posY: 80, width: 150 },
-];
-
-// 最远层：第四排，在后排之上，与后排紧密衔接
-var DECO_FAR_ROW = [
-  { file: 'coral-7.png',  posX: -1, posY: 73, width: 160 },
-  { file: 'coral-4.png',  posX: 5,  posY: 71, width: 150 },
-  { file: 'coral-9.png',  posX: 10, posY: 73, width: 145 },
-  { file: 'coral-1.png',  posX: 15, posY: 70, width: 155 },
-  { file: 'coral-12.png', posX: 20, posY: 72, width: 148 },
-  { file: 'coral-6.png',  posX: 25, posY: 71, width: 155 },
-  { file: 'coral-3.png',  posX: 30, posY: 73, width: 150 },
-  { file: 'coral-8.png',  posX: 35, posY: 70, width: 160 },
-  { file: 'coral-2.png',  posX: 40, posY: 72, width: 145 },
-  { file: 'coral-11.png', posX: 45, posY: 71, width: 155 },
-  { file: 'coral-5.png',  posX: 50, posY: 73, width: 148 },
-  { file: 'coral-10.png', posX: 55, posY: 70, width: 152 },
-  { file: 'coral-3.png',  posX: 60, posY: 72, width: 155 },
-  { file: 'coral-9.png',  posX: 65, posY: 71, width: 148 },
-  { file: 'coral-4.png',  posX: 70, posY: 73, width: 150 },
-  { file: 'coral-12.png', posX: 75, posY: 70, width: 155 },
-  { file: 'coral-1.png',  posX: 80, posY: 72, width: 148 },
-  { file: 'coral-6.png',  posX: 85, posY: 71, width: 152 },
-  { file: 'coral-8.png',  posX: 90, posY: 73, width: 155 },
-  { file: 'coral-2.png',  posX: 96, posY: 70, width: 150 },
-];
-
-function initDecoRows() {
-  _populateDecoRow('coral-row-far',  DECO_FAR_ROW);
-  _populateDecoRow('coral-row-mid',  DECO_MID_ROW);
-  _populateDecoRow('coral-row-back', DECO_BACK_ROW);
-}
-
-function _populateDecoRow(containerId, items) {
-  var container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '';
-  var params = _getAdaptiveParams();
-  for (var i = 0; i < items.length; i++) {
-    var d = items[i];
-    var div = document.createElement('div');
-    div.className = 'deco-coral';
-    div.style.left = d.posX + 'vw';
-    div.style.top  = (d.posY - params.yShift) + 'vh';
-    var img = new Image();
-    img.src = 'assets/coral-group/' + d.file;
-    img.style.width = (d.width * params.scale) + 'px';
-    div.appendChild(img);
-    container.appendChild(div);
-  }
-}
-
-// ═════════════════════════════════════════════
 // main.js
 // ═════════════════════════════════════════════
 
@@ -850,7 +864,6 @@ var _speechTimer = null;
 // Bootstrap
 initEffects();
 initCorals(onCoralClick);
-initDecoRows();
 initToolbar();
 
 // Loading 消退
@@ -933,9 +946,9 @@ function onCoralClick(coral) {
       showSpeechBubble('提示', MESSAGES.alreadyRepaired);
       speak('alreadyRepaired');
     } else {
-      var msg = MESSAGES.detect[coral.data.id];
+      var msg = MESSAGES.detect[coral.data.problem];
       showSpeechBubble('探测结果', msg);
-      speak('detect_' + coral.data.id);
+      speak('detect_' + coral.data.problem);
     }
     return;
   }
@@ -968,8 +981,8 @@ function tryRepair(coral, tool) {
     case 'nutrition':   playSfxNutrition(); break;
     case 'temperature': playSfxTemperature(); break;
   }
-  showSpeechBubble('修复成功 ✨', MESSAGES.repair[coral.data.id]);
-  speak('repair_' + coral.data.id);
+  showSpeechBubble('修复成功 ✨', MESSAGES.repair[coral.data.problem]);
+  speak('repair_' + coral.data.problem);
   updateProgress();
 
   var total = getProblemCount();
@@ -986,8 +999,8 @@ function tryRepair(coral, tool) {
 }
 
 function openInfoPanel(coral) {
-  document.getElementById('panel-emoji').textContent   = coral.data.emoji;
-  document.getElementById('panel-name').textContent    = coral.data.name;
+  document.getElementById('panel-emoji').textContent   = '🪸';
+  document.getElementById('panel-name').textContent    = coral.data.problemLabel || '';
   document.getElementById('panel-problem').textContent = coral.data.problemLabel;
   document.getElementById('panel-desc').textContent    = coral.data.desc;
 
