@@ -148,6 +148,114 @@ function playSfxTemperature() {
   }
 }
 
+// 冰雪飘动音效：柔和风声+冰晶闪烁
+function playSfxSnowWind() {
+  var ctx = _getAudioCtx();
+  var now = ctx.currentTime;
+  var dur = 2.5;
+
+  // 风声：滤波白噪声
+  var bufLen = Math.floor(ctx.sampleRate * dur);
+  var buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+  var d = buf.getChannelData(0);
+  for (var i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1);
+  var wind = ctx.createBufferSource();
+  wind.buffer = buf;
+  var windFilter = ctx.createBiquadFilter();
+  windFilter.type = 'bandpass';
+  windFilter.frequency.setValueAtTime(600, now);
+  windFilter.frequency.linearRampToValueAtTime(1200, now + dur * 0.5);
+  windFilter.frequency.linearRampToValueAtTime(400, now + dur);
+  windFilter.Q.value = 1.5;
+  var windGain = ctx.createGain();
+  windGain.gain.setValueAtTime(0, now);
+  windGain.gain.linearRampToValueAtTime(0.06, now + 0.3);
+  windGain.gain.setValueAtTime(0.06, now + dur * 0.6);
+  windGain.gain.linearRampToValueAtTime(0, now + dur);
+  wind.connect(windFilter);
+  windFilter.connect(windGain);
+  windGain.connect(ctx.destination);
+  wind.start(now);
+  wind.stop(now + dur);
+
+  // 冰晶闪烁：随机高频短音
+  for (var j = 0; j < 8; j++) {
+    var t = now + 0.2 + Math.random() * (dur - 0.5);
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2000 + Math.random() * 3000, t);
+    g.gain.setValueAtTime(0.04 + Math.random() * 0.03, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.08 + Math.random() * 0.06);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.15);
+  }
+}
+
+// 羽化音效：柔和扩散消融感
+function playSfxFeather() {
+  var ctx = _getAudioCtx();
+  var now = ctx.currentTime;
+
+  // 柔和上升shimmer音
+  for (var i = 0; i < 5; i++) {
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    var baseFreq = 600 + i * 180;
+    var t = now + i * 0.12;
+    osc.frequency.setValueAtTime(baseFreq, t);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.8, t + 0.6);
+    g.gain.setValueAtTime(0.07, t);
+    g.gain.linearRampToValueAtTime(0.09, t + 0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.75);
+  }
+
+  // 气息扩散：滤波噪声
+  var bufLen = Math.floor(ctx.sampleRate * 1.2);
+  var buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+  var d = buf.getChannelData(0);
+  for (var j = 0; j < bufLen; j++) d[j] = (Math.random() * 2 - 1);
+  var noise = ctx.createBufferSource();
+  noise.buffer = buf;
+  var filter = ctx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.setValueAtTime(3000, now);
+  filter.frequency.linearRampToValueAtTime(6000, now + 0.8);
+  filter.Q.value = 0.5;
+  var nGain = ctx.createGain();
+  nGain.gain.setValueAtTime(0, now);
+  nGain.gain.linearRampToValueAtTime(0.04, now + 0.2);
+  nGain.gain.linearRampToValueAtTime(0.03, now + 0.6);
+  nGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+  noise.connect(filter);
+  filter.connect(nGain);
+  nGain.connect(ctx.destination);
+  noise.start(now);
+  noise.stop(now + 1.2);
+
+  // 尾部和弦泛音
+  var chord = [880, 1100, 1320];
+  for (var k = 0; k < chord.length; k++) {
+    var o = ctx.createOscillator();
+    var cg = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(chord[k], now + 0.5);
+    cg.gain.setValueAtTime(0.05, now + 0.5);
+    cg.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+    o.connect(cg);
+    cg.connect(ctx.destination);
+    o.start(now + 0.5);
+    o.stop(now + 1.5);
+  }
+}
+
 // 按钮音效：机械键盘敲击
 function playSfxButton() {
   var ctx = _getAudioCtx();
@@ -340,23 +448,21 @@ function _spawnClean(cx, cy, rect) {
 }
 
 function _spawnTemperature(cx, cy, rect) {
-  var count = 24;
+  var count = 35;
   var particles = [];
-  var baseR = Math.max(rect.width, rect.height) * 0.45;
   for (var i = 0; i < count; i++) {
-    var angle = (i / count) * Math.PI * 2;
-    var r = baseR + (Math.random() - 0.5) * 20;
     particles.push({
-      angle: angle,
-      r: r,
-      cx: cx, cy: cy,
-      angularSpeed: 1.4 + Math.random() * 0.8,
-      x: cx + Math.cos(angle) * r,
-      y: cy + Math.sin(angle) * r,
-      size: 6 + Math.random() * 8,
+      x: cx + (Math.random() - 0.5) * rect.width * 1.5,
+      y: cy - rect.height * 0.6 - Math.random() * 80,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: 0.8 + Math.random() * 1.5,
+      drift: (Math.random() - 0.5) * 0.02,
+      size: 5 + Math.random() * 10,
       life: 1.0,
-      decay: 0.008 + Math.random() * 0.006,
-      color: 'hsl(' + (200 + Math.random() * 40) + ', 90%, 80%)',
+      decay: 0.005 + Math.random() * 0.005,
+      angle: Math.random() * Math.PI * 2,
+      spin: (Math.random() - 0.5) * 0.04,
+      color: 'hsl(' + (195 + Math.random() * 25) + ', 90%, ' + (80 + Math.random() * 15) + '%)',
       isCrystal: true,
     });
   }
@@ -382,11 +488,11 @@ function _updateEffect(eff) {
     allDead = false;
     p.life -= p.decay;
     if (p.isCrystal) {
-      p.angle += p.angularSpeed * dt;
-      p.x = p.cx + Math.cos(p.angle) * p.r;
-      p.y = p.cy + Math.sin(p.angle) * p.r;
-      p.r *= 0.994;
-      _drawCrystal(p);
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx += p.drift;
+      p.angle += p.spin;
+      _drawSnowflake(p);
     } else if (p.isRing) {
       // 扩散冲击波环
       p.ringR += p.ringSpeed;
@@ -477,28 +583,46 @@ function _updateEffect(eff) {
   if (allDead) eff.done = true;
 }
 
-function _drawCrystal(p) {
+function _drawSnowflake(p) {
   var x = p.x, y = p.y, size = p.size, life = p.life;
   _fxCtx.save();
-  _fxCtx.globalAlpha = Math.max(0, life) * 0.85;
+  _fxCtx.globalAlpha = Math.max(0, life) * 0.9;
   _fxCtx.translate(x, y);
-  _fxCtx.rotate(p.angle * 2);
+  _fxCtx.rotate(p.angle);
   _fxCtx.strokeStyle = p.color;
   _fxCtx.lineWidth = 1.5;
+  _fxCtx.lineCap = 'round';
   for (var i = 0; i < 6; i++) {
     var a = (i / 6) * Math.PI * 2;
+    var ex = Math.cos(a) * size;
+    var ey = Math.sin(a) * size;
     _fxCtx.beginPath();
     _fxCtx.moveTo(0, 0);
-    _fxCtx.lineTo(Math.cos(a) * size, Math.sin(a) * size);
+    _fxCtx.lineTo(ex, ey);
     _fxCtx.stroke();
-    var mx = Math.cos(a) * size * 0.6;
-    var my = Math.sin(a) * size * 0.6;
-    var perp = a + Math.PI / 2;
-    _fxCtx.beginPath();
-    _fxCtx.moveTo(mx + Math.cos(perp) * size * 0.25, my + Math.sin(perp) * size * 0.25);
-    _fxCtx.lineTo(mx - Math.cos(perp) * size * 0.25, my - Math.sin(perp) * size * 0.25);
-    _fxCtx.stroke();
+    // 分支
+    var bLen = size * 0.35;
+    for (var b = 0; b < 2; b++) {
+      var t = 0.45 + b * 0.3;
+      var bx = Math.cos(a) * size * t;
+      var by = Math.sin(a) * size * t;
+      var ba1 = a + Math.PI / 4;
+      var ba2 = a - Math.PI / 4;
+      _fxCtx.beginPath();
+      _fxCtx.moveTo(bx, by);
+      _fxCtx.lineTo(bx + Math.cos(ba1) * bLen, by + Math.sin(ba1) * bLen);
+      _fxCtx.stroke();
+      _fxCtx.beginPath();
+      _fxCtx.moveTo(bx, by);
+      _fxCtx.lineTo(bx + Math.cos(ba2) * bLen, by + Math.sin(ba2) * bLen);
+      _fxCtx.stroke();
+    }
   }
+  // 中心圆点
+  _fxCtx.fillStyle = p.color;
+  _fxCtx.beginPath();
+  _fxCtx.arc(0, 0, 2, 0, Math.PI * 2);
+  _fxCtx.fill();
   _fxCtx.restore();
 }
 
@@ -697,6 +821,9 @@ function repairCoral(coral) {
   if (coral.data.problem === 'trash') {
     _removeTrashOverlay(el);
   }
+  if (coral.data.problem === 'temperature') {
+    _removeHeatSteam(el);
+  }
   el.removeAttribute('data-problem');
   el.classList.add('repaired');
   setTimeout(function() { el.classList.remove('repaired'); }, 1100);
@@ -711,6 +838,10 @@ function resetCorals() {
     coral.el.classList.remove('repaired');
     if (coral.data.problem === 'trash') {
       _restoreTrashOverlay(coral.el, coral.data.trashTemplate);
+    }
+    if (coral.data.problem === 'temperature') {
+      _removeHeatSteam(coral.el);
+      _addHeatSteam(coral.el);
     }
   }
 }
@@ -806,40 +937,48 @@ function _getCoralScale() {
 
 // 垃圾素材
 var TRASH_IMAGES = [
-  'assets/trash/bag-1.png',
-  'assets/trash/bag-2.png',
-  'assets/trash/bag-3.png',
-  'assets/trash/bottle-1.png',
-  'assets/trash/bottle-2.png',
-  'assets/trash/net-1.png',
-  'assets/trash/net-2.png',
+  'assets/trash/bag-1.png',       // 0
+  'assets/trash/bag-2.png',       // 1
+  'assets/trash/bag-3.png',       // 2
+  'assets/trash/bottle-1.png',    // 3
+  'assets/trash/bottle-2.png',    // 4
+  'assets/trash/net-1.png',       // 5
+  'assets/trash/net-2.png',       // 6
+  'assets/trash/cola-1.png',      // 7
+  'assets/trash/cola-2.png',      // 8
+  'assets/trash/cloth-1.png',     // 9
+  'assets/trash/cloth-2.png',     // 10
+  'assets/trash/cloth-3.png',     // 11
+  'assets/trash/string-1.png',    // 12
+  'assets/trash/string-2.png',    // 13
+  'assets/trash/xiguan-1.png',    // 14
+  'assets/trash/xiguan-2.png',    // 15
 ];
 
-// 垃圾覆盖模板（循环使用）
 var TRASH_TEMPLATES = [
   [
-    { src: 0, top: '-5%',  left: '-10%',  size: 120, rotate: -15 },
-    { src: 3, top: '5%',   left: '50%',   size: 100, rotate: 25 },
-    { src: 5, top: '25%',  left: '10%',   size: 145, rotate: 5 },
-    { src: 1, top: '40%',  left: '55%',   size: 110, rotate: -20 },
-    { src: 4, top: '55%',  left: '-10%',  size: 95,  rotate: 30 },
-    { src: 6, top: '50%',  left: '40%',   size: 130, rotate: -10 },
+    { src: 0,  top: '-5%',  left: '-10%',  size: 120, rotate: -15 },
+    { src: 7,  top: '5%',   left: '50%',   size: 95,  rotate: 25 },
+    { src: 12, top: '15%',  left: '15%',   size: 130, rotate: 8 },
+    { src: 9,  top: '30%',  left: '55%',   size: 115, rotate: -20 },
+    { src: 14, top: '45%',  left: '-5%',   size: 90,  rotate: 30 },
+    { src: 5,  top: '50%',  left: '40%',   size: 140, rotate: -10 },
   ],
   [
-    { src: 1, top: '-5%',  left: '40%',   size: 110, rotate: 12 },
-    { src: 5, top: '10%',  left: '-10%',  size: 140, rotate: -8 },
-    { src: 4, top: '20%',  left: '50%',   size: 95,  rotate: -25 },
-    { src: 0, top: '35%',  left: '5%',    size: 120, rotate: 18 },
-    { src: 6, top: '45%',  left: '45%',   size: 125, rotate: -12 },
-    { src: 2, top: '55%',  left: '20%',   size: 105, rotate: 22 },
+    { src: 8,  top: '-5%',  left: '40%',   size: 100, rotate: 12 },
+    { src: 10, top: '10%',  left: '-10%',  size: 125, rotate: -8 },
+    { src: 3,  top: '20%',  left: '50%',   size: 95,  rotate: -25 },
+    { src: 13, top: '30%',  left: '5%',    size: 120, rotate: 18 },
+    { src: 6,  top: '45%',  left: '45%',   size: 135, rotate: -12 },
+    { src: 15, top: '55%',  left: '20%',   size: 85,  rotate: 22 },
   ],
   [
-    { src: 2, top: '-5%',  left: '10%',   size: 115, rotate: -12 },
-    { src: 4, top: '5%',   left: '45%',   size: 100, rotate: 22 },
-    { src: 0, top: '20%',  left: '-10%',  size: 135, rotate: 5 },
-    { src: 6, top: '30%',  left: '40%',   size: 125, rotate: -15 },
-    { src: 3, top: '45%',  left: '15%',   size: 105, rotate: 28 },
-    { src: 1, top: '50%',  left: '50%',   size: 110, rotate: -8 },
+    { src: 11, top: '-5%',  left: '10%',   size: 115, rotate: -12 },
+    { src: 4,  top: '5%',   left: '45%',   size: 100, rotate: 22 },
+    { src: 14, top: '18%',  left: '-10%',  size: 90,  rotate: 5 },
+    { src: 1,  top: '30%',  left: '50%',   size: 120, rotate: -15 },
+    { src: 7,  top: '42%',  left: '10%',   size: 95,  rotate: 28 },
+    { src: 12, top: '52%',  left: '45%',   size: 110, rotate: -8 },
   ],
 ];
 
@@ -881,6 +1020,24 @@ function _restoreTrashOverlay(el, templateIdx) {
   _addTrashOverlay(el, templateIdx);
 }
 
+function _addHeatSteam(div) {
+  var steamCount = 5;
+  for (var i = 0; i < steamCount; i++) {
+    var steam = document.createElement('div');
+    steam.className = 'heat-steam';
+    steam.style.left = (15 + Math.random() * 70) + '%';
+    steam.style.top = (Math.random() * 40) + '%';
+    steam.style.setProperty('--steam-dur', (1.5 + Math.random() * 1.5) + 's');
+    steam.style.setProperty('--steam-delay', (Math.random() * 2) + 's');
+    div.appendChild(steam);
+  }
+}
+
+function _removeHeatSteam(el) {
+  var steams = el.querySelectorAll('.heat-steam');
+  for (var i = 0; i < steams.length; i++) steams[i].remove();
+}
+
 function _createCoralElement(data) {
   var div = document.createElement('div');
   div.className = 'coral-item';
@@ -911,6 +1068,10 @@ function _createCoralElement(data) {
     _addTrashOverlay(div, data.trashTemplate);
   }
 
+  if (data.problem === 'temperature') {
+    _addHeatSteam(div);
+  }
+
   if (data.problem) {
     div.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -928,6 +1089,51 @@ function _createCoralElement(data) {
 
 var _activeTool = 'detect';
 var _speechTimer = null;
+var _highlightedCoral = null;
+
+var _highlightedParent = null;
+var _highlightedParentZ = null;
+var _healingInProgress = false;
+
+var _highlightedOrigLeft = null;
+var _highlightedOrigTop = null;
+
+function highlightCoral(coralEl) {
+  unhighlightCoral();
+  // 保存原始位置
+  _highlightedOrigLeft = coralEl.style.left;
+  _highlightedOrigTop = coralEl.style.top;
+  // 移到珊瑚群中间（屏幕底部居中）
+  coralEl.style.left = '50vw';
+  coralEl.style.top = '98vh';
+  coralEl.classList.add('detect-highlight');
+  _highlightedCoral = coralEl;
+  var parent = coralEl.parentElement;
+  if (parent) {
+    _highlightedParent = parent;
+    _highlightedParentZ = parent.style.zIndex;
+    parent.style.zIndex = '999';
+  }
+}
+
+function unhighlightCoral() {
+  if (_highlightedCoral) {
+    // 恢复原始位置
+    if (_highlightedOrigLeft !== null) {
+      _highlightedCoral.style.left = _highlightedOrigLeft;
+      _highlightedCoral.style.top = _highlightedOrigTop;
+      _highlightedOrigLeft = null;
+      _highlightedOrigTop = null;
+    }
+    _highlightedCoral.classList.remove('detect-highlight');
+    _highlightedCoral = null;
+  }
+  if (_highlightedParent) {
+    _highlightedParent.style.zIndex = _highlightedParentZ || '';
+    _highlightedParent = null;
+    _highlightedParentZ = null;
+  }
+}
 
 // Bootstrap
 initEffects();
@@ -1010,11 +1216,13 @@ function initToolbar() {
 }
 
 function onCoralClick(coral) {
+  if (_healingInProgress) return;
   if (_activeTool === 'detect') {
     if (coral.isRepaired) {
       showSpeechBubble('提示', MESSAGES.alreadyRepaired, coral.el);
       speak('alreadyRepaired');
     } else {
+      highlightCoral(coral.el);
       var msg = MESSAGES.detect[coral.data.problem];
       showSpeechBubble('探测结果', msg, coral.el);
       speak('detect_' + coral.data.problem);
@@ -1042,18 +1250,17 @@ function tryRepair(coral, tool) {
     shakeToolbar();
     return;
   }
-  repairCoral(coral);
-  playRepairEffect(coral.el, coral.data.problem);
-  // 播放修复音效
-  switch (coral.data.problem) {
-    case 'trash':       playSfxClean(); break;
-    case 'nutrition':   playSfxNutrition(); break;
-    case 'temperature': playSfxTemperature(); break;
+  if (coral.data.problem === 'nutrition') {
+    _playNutritionHeal(coral);
+  } else if (coral.data.problem === 'trash') {
+    _playTrashClean(coral);
+  } else if (coral.data.problem === 'temperature') {
+    _playTemperatureCool(coral);
   }
-  showSpeechBubble('修复成功 ✨', MESSAGES.repair[coral.data.problem], coral.el);
-  speak('repair_' + coral.data.problem);
-  updateProgress();
+}
 
+function _checkAllDone() {
+  updateProgress();
   var total = getProblemCount();
   var done  = getRepairedCount();
   if (done === total) {
@@ -1065,6 +1272,146 @@ function tryRepair(coral, tool) {
       document.getElementById('completion-overlay').classList.remove('hidden');
     }, 2200);
   }
+}
+
+function _playNutritionHeal(coral) {
+  var el = coral.el;
+  var HEAL_DUR = 3000;
+  _healingInProgress = true;
+
+  // 创建健康图层（原图无 grayscale）覆盖在白化图上方
+  var origImg = el.querySelector('img');
+  var healthLayer = document.createElement('div');
+  healthLayer.className = 'nutrition-healthy-layer';
+  var healthImg = origImg.cloneNode(true);
+  healthImg.style.filter = 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))';
+  healthLayer.appendChild(healthImg);
+  el.appendChild(healthLayer);
+
+  el.classList.add('nutrition-healing');
+
+  // 生成滴落水滴
+  var rect = el.getBoundingClientRect();
+  var dripCount = 8;
+  var drips = [];
+  for (var i = 0; i < dripCount; i++) {
+    var drip = document.createElement('div');
+    drip.className = 'nutri-drip';
+    var leftPct = 15 + Math.random() * 70;
+    drip.style.left = leftPct + '%';
+    drip.style.top = '-10px';
+    var dripDist = rect.height * 0.8 + Math.random() * rect.height * 0.3;
+    drip.style.setProperty('--drip-dist', dripDist + 'px');
+    drip.style.setProperty('--drip-delay', (i * 0.3 + Math.random() * 0.2) + 's');
+    drip.style.setProperty('--drip-dur', (1.2 + Math.random() * 0.6) + 's');
+    el.appendChild(drip);
+    drips.push(drip);
+  }
+
+  playSfxNutrition();
+
+  // 颜色完全恢复后
+  setTimeout(function() {
+    el.classList.remove('nutrition-healing');
+    for (var i = 0; i < drips.length; i++) drips[i].remove();
+    healthLayer.remove();
+
+    repairCoral(coral);
+    playSfxFeather();
+    showSpeechBubble('修复成功 ✨', MESSAGES.repair.nutrition, el);
+    speak('repair_nutrition');
+
+    // 延迟后再缩回原始大小
+    setTimeout(function() {
+      unhighlightCoral();
+      _healingInProgress = false;
+      _checkAllDone();
+    }, 800);
+  }, HEAL_DUR + 500);
+}
+
+function _playTrashClean(coral) {
+  var el = coral.el;
+  _healingInProgress = true;
+  el.classList.add('trash-cleaning');
+
+  // 添加刷子
+  var brush = document.createElement('div');
+  brush.className = 'sweep-brush';
+  brush.textContent = '🧹';
+  el.appendChild(brush);
+
+  playSfxClean();
+
+  // 逐个扫走垃圾
+  var trashItems = el.querySelectorAll('.trash-overlay');
+  var count = trashItems.length;
+  var interval = 600;
+
+  for (var i = 0; i < count; i++) {
+    (function(idx) {
+      setTimeout(function() {
+        trashItems[idx].classList.add('swept-away');
+      }, interval * (idx + 1));
+    })(i);
+  }
+
+  // 全部扫完后
+  var totalDur = interval * (count + 1) + 600;
+  setTimeout(function() {
+    brush.remove();
+    el.classList.remove('trash-cleaning');
+
+    // 移除垃圾 DOM
+    for (var i = 0; i < trashItems.length; i++) trashItems[i].remove();
+
+    repairCoral(coral);
+    unhighlightCoral();
+    _healingInProgress = false;
+
+    playSfxFeather();
+    showSpeechBubble('修复成功 ✨', MESSAGES.repair.trash, el);
+    speak('repair_trash');
+    _checkAllDone();
+  }, totalDur);
+}
+
+function _playTemperatureCool(coral) {
+  var el = coral.el;
+  var COOL_DUR = 3000;
+  _healingInProgress = true;
+
+  playSfxSnowWind();
+  playRepairEffect(el, 'temperature');
+
+  // 热气逐渐消失
+  var steams = el.querySelectorAll('.heat-steam');
+  for (var i = 0; i < steams.length; i++) {
+    (function(s, idx) {
+      setTimeout(function() {
+        s.style.animation = 'none';
+        s.style.opacity = '0';
+        s.style.transition = 'opacity 0.5s ease';
+      }, idx * 400);
+    })(steams[i], i);
+  }
+
+  el.classList.add('temp-cooling');
+
+  setTimeout(function() {
+    el.classList.remove('temp-cooling');
+    repairCoral(coral);
+
+    playSfxFeather();
+    showSpeechBubble('修复成功 ✨', MESSAGES.repair.temperature, el);
+    speak('repair_temperature');
+
+    setTimeout(function() {
+      unhighlightCoral();
+      _healingInProgress = false;
+      _checkAllDone();
+    }, 800);
+  }, COOL_DUR + 500);
 }
 
 function openInfoPanel(coral) {
